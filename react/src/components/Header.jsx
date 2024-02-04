@@ -7,15 +7,46 @@ import {
     XMarkIcon,
     Bars3Icon,
 } from "@heroicons/react/24/solid";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import logo from "../assets/img/kanisius.png";
 import logoSmall from "../assets/img/icon.png";
+import { useStateContext } from "../contexts/ContextProvider";
 
 export default function Header() {
     const [openSidebar, setOpenSidebar] = useState(false);
     const [openSearchBar, setOpenSearchBar] = useState(false); //Floating Search Bar
     const [openCartItem, setOpenCartItem] = useState(false);
     const [openCategory, setOpenCategory] = useState(false);
+    const [categoryActive, setCategoryActive] = useState(0);
+    const [categoryDetails, setCategoryDetails] = useState([]);
+    const [activeCategoryDetailName, setActiveCategoryDetailName] =
+        useState("");
+    const [subCategorys, setsubCategorys] = useState(false);
+    const category = useStateContext();
+
+    console.log(category);
+    const onCategoryHover = (id) => {
+        setCategoryActive(id);
+        console.log("active cate " + id);
+    };
+
+    const onCategoryDtlClick = (categoryNameDtl) => {
+        setActiveCategoryDetailName(categoryNameDtl);
+    };
+
+    const onMouseEnterCategoryDtl = (categoryNameDtl) => {
+        setActiveCategoryDetailName(categoryNameDtl);
+    };
+
+    const onMouseLeaveCategoryDtl = () => {
+        setActiveCategoryDetailName("");
+    };
+
+    useEffect(() => {
+        setCategoryDetails(category.categorys[0]);
+    }, []);
+
+    // console.log(categoryDetails);
 
     return (
         <>
@@ -287,47 +318,70 @@ export default function Header() {
                 className={`fixed bg-white  left-0 z-40 w-full shadow-md pb-8 max-h-80 transition-all ease-in-out duration-300 ${
                     openCategory ? "md:top-28 top-[78px]" : "-top-96"
                 }`}
+                onMouseLeave={() => setOpenCategory(!openCategory)}
             >
                 <div className="w-full max-w-7xl mx-auto px-8 py-4">
                     <div className="flex flex-row">
                         <div className="md:w-1/4 w-1/3 h-full max-h-72 overflow-auto scrollbar border-r-2 border-r-blue-950">
                             <ul className="md:px-4 pr-4">
-                                <li className="font-semibold text-blue-950 text-base hover:text-blue-800 mb-4 cursor-pointer">
-                                    Buku Umum
-                                </li>
-                                <li className="font-semibold text-blue-950 text-base hover:text-blue-800 mb-4 cursor-pointer">
-                                    Buku Grejawi
-                                </li>
-                                <li className="font-semibold text-blue-950 text-base hover:text-blue-800 mb-4 cursor-pointer">
-                                    Buku Pelajaran
-                                </li>
-                                <li className="font-semibold text-blue-950 text-base hover:text-blue-800 mb-4 cursor-pointer">
-                                    Buku Anak
-                                </li>
-                                <li className="font-semibold text-blue-950 text-base hover:text-blue-800 mb-4 cursor-pointer">
-                                    Benda Rohani
-                                </li>
-                                <li className="font-semibold text-blue-950 text-base hover:text-blue-800 mb-4 cursor-pointer">
-                                    Aksesoris
-                                </li>
-                                <li className="font-semibold text-blue-950 text-base hover:text-blue-800 mb-4 cursor-pointer break-words">
-                                    Perlengkapan Sekolah
-                                </li>
-                                <li className="font-semibold text-blue-950 text-base hover:text-blue-800 mb-4 cursor-pointer">
-                                    Buku Umum
-                                </li>
-                                <li className="font-semibold text-blue-950 text-base hover:text-blue-800 mb-4 cursor-pointer">
-                                    Buku Grejawi
-                                </li>
-                                <li className="font-semibold text-blue-950 text-base hover:text-blue-800 mb-4 cursor-pointer">
-                                    Buku Pelajaran
-                                </li>
-                                <li className="font-semibold text-blue-950 text-base hover:text-blue-800 mb-4 cursor-pointer">
-                                    Buku Anak
-                                </li>
+                                {/* {console.log(category)} */}
+                                {category.categorys.map((cat, index) => (
+                                    <li
+                                        className="font-semibold text-blue-950 text-base hover:text-blue-800 mb-4 cursor-pointer"
+                                        onMouseEnter={(evt) =>
+                                            onCategoryHover(index)
+                                        }
+                                        key={cat.id}
+                                    >
+                                        {cat.category_name}
+                                    </li>
+                                ))}
                             </ul>
                         </div>
-                        <div className="w-3/4"></div>
+                        <div className="md:w-3/4 w-2/3 h-full max-h-72 mx-4 overflow-auto scrollbar">
+                            <ul className="flex flex-wrap flex-row font-semibold text-blue-950 pt-1">
+                                {category.categorys[
+                                    categoryActive
+                                ].category_details.map((dtl) => (
+                                    <li
+                                        className="whitespace-nowrap lg:w-1/4 sm:w-1/2 w-full flex flex-col cursor-pointer text-sm pb-2 hover:text-blue-900"
+                                        onMouseEnter={(ev) =>
+                                            onMouseEnterCategoryDtl(dtl.detail)
+                                        }
+                                        onMouseLeave={() =>
+                                            onMouseLeaveCategoryDtl()
+                                        }
+                                        key={dtl.detail}
+                                    >
+                                        {dtl.detail}
+
+                                        {dtl.subCategory.length ? (
+                                            <ul
+                                                className={`${
+                                                    activeCategoryDetailName ==
+                                                    dtl.detail
+                                                        ? "flex"
+                                                        : "hidden"
+                                                } flex-wrap flex-col font-semibold text-blue-950 pt-1`}
+                                            >
+                                                {dtl.subCategory.map((sub) => (
+                                                    <li
+                                                        className="whitespace-nowrap lg:w-1/4 sm:w-1/2 w-full flex items-center cursor-pointer text-sm pb-2 pl-4 hover:text-blue-900"
+                                                        key={
+                                                            sub.subCategoryName
+                                                        }
+                                                    >
+                                                        {sub.subCategoryName}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        ) : (
+                                            ""
+                                        )}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
