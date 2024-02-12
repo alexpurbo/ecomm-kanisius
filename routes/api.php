@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\KelKategoryController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -21,3 +22,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::apiResource('kel-kategori', KelKategoryController::class);
 Route::get('testQuery', [KelKategoryController::class, 'testQuery']);
+Route::get('new-products', [ProductController::class, 'getNewProducts']);
+route::get('benda-rohani', [ProductController::class, 'getSpiritualProducts']);
+route::get('product/{id}', [ProductController::class, 'show']);

@@ -15,7 +15,8 @@ class KelKategoryController extends Controller
      */
     public function index()
     {
-        return KelKategory::all();
+        $kelKategory = KelKategory::all();
+        return response()->json($kelKategory);
     }
 
     /**

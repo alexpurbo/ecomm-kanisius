@@ -13,15 +13,16 @@ import "slick-carousel/slick/slick-theme.css";
 
 export default function ProductListWithIcon({ title, color }) {
     var settings = {
-        slidesToShow: 6, // lg
+        slidesToShow: 5, // lg
         infinite: false,
         arrows: false,
+        swipe: false,
         responsive: [
             {
                 // md-lg
                 breakpoint: 1023,
                 settings: {
-                    slidesToShow: 5,
+                    slidesToShow: 4,
                     // slidesToScroll: 1,
                 },
             },
@@ -29,20 +30,12 @@ export default function ProductListWithIcon({ title, color }) {
                 // md-lg
                 breakpoint: 767,
                 settings: {
-                    slidesToShow: 4,
-                    // slidesToScroll: 1,
-                },
-            },
-            {
-                // sm-md
-                breakpoint: 639,
-                settings: {
                     slidesToShow: 3,
                     // slidesToScroll: 1,
                 },
             },
             {
-                // xs - sm
+                // sm-md
                 breakpoint: 639,
                 settings: {
                     slidesToShow: 2,
@@ -67,7 +60,7 @@ export default function ProductListWithIcon({ title, color }) {
             <div className="w-full flex items-center justify-center">
                 <div className="relative py-4 w-[320px] xs:w-[425px] sm:w-[640px] md:w-[768px] lg:w-[1024px] mx-auto">
                     <div
-                        className={`${color} absolute block top-0 left-0 h-full lg:w-1/4 md:w-[30%] sm:w-2/5 w-3/4 z-10 rounded-lg`}
+                        className={`${color} absolute sm:block hidden top-0 left-0 h-full lg:w-1/4 md:w-[30%] sm:w-2/5 w-3/4 z-10 rounded-lg`}
                     >
                         <div className="w-2/3 flex items-center justify-center pl-4 pr-2 py-8 h-full">
                             <div className="flex flex-col">
@@ -80,11 +73,11 @@ export default function ProductListWithIcon({ title, color }) {
                             </div>
                         </div>
                     </div>
-                    <div className="relative z-10">
+                    <div className="relative z-10 sm:pl-[153px] pl-0">
                         <Slider {...settings}>
-                            <div className="px-2">
-                                <div className="relative h-[310px] xs:h-[275px] sm:h-[310px] md:h-[295px] lg:h-[330px] w-full ">
-                                    {/* <div className="w-full p-2">
+                            {/* <div className="px-2"> */}
+                            {/* <div className="relative h-[310px] xs:h-[275px] sm:h-[310px] md:h-[295px] lg:h-[330px] w-full "> */}
+                            {/* <div className="w-full p-2">
                                         <div className="flex items-center justify-center">
                                             <img
                                                 className="rounded-md lg:h-[207px] md:h-[182px] sm:h-[192px] xs:h-[164px] h-[192px]"
@@ -104,8 +97,8 @@ export default function ProductListWithIcon({ title, color }) {
                                             </div>
                                         </div>
                                     </div> */}
-                                </div>
-                            </div>
+                            {/* </div> */}
+                            {/* </div> */}
                             <div className="px-2">
                                 <div className="relative h-[310px] xs:h-[275px] sm:h-[310px] md:h-[295px] lg:h-[330px] w-full border border-slate-200 rounded-lg shadow-md cursor-pointer bg-white">
                                     <a href="/product-detail">

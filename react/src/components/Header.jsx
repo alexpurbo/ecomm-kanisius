@@ -3,9 +3,10 @@ import {
     ShoppingCartIcon,
     ChevronDownIcon,
     ChevronUpIcon,
-    XCircleIcon,
     XMarkIcon,
     Bars3Icon,
+    XCircleIcon,
+    ArrowLeftEndOnRectangleIcon,
 } from "@heroicons/react/24/solid";
 import React, { useEffect, useState } from "react";
 import logo from "../assets/img/kanisius.png";
@@ -23,11 +24,13 @@ export default function Header() {
         useState("");
     const [subCategorys, setsubCategorys] = useState(false);
     const category = useStateContext();
+    const [openAccountThumb, setOpenAccountThumb] = useState(false);
+    const [openLogin, setOpenLogin] = useState(false);
 
-    console.log(category);
+    // console.log(category);
     const onCategoryHover = (id) => {
         setCategoryActive(id);
-        console.log("active cate " + id);
+        // console.log("active cate " + id);
     };
 
     const onCategoryDtlClick = (categoryNameDtl) => {
@@ -166,7 +169,10 @@ export default function Header() {
                                 {/* <a href="">
                                 <MdOutlineLogin />
                             </a> */}
-                                <button className="bg-white hover:text-white text-blue-950 border border-blue-900 font-semibold hover:bg-blue-950 transition delay-150 ease-in-out hover:shadow-md py-2 px-4 rounded-md">
+                                <button
+                                    className="bg-white hover:text-white text-blue-950 border border-blue-900 font-semibold hover:bg-blue-950 transition delay-150 ease-in-out hover:shadow-md py-2 px-4 rounded-md"
+                                    onClick={() => setOpenLogin(true)}
+                                >
                                     Masuk
                                 </button>
                                 <button className="bg-white hover:text-white text-blue-950 border border-blue-900 font-semibold hover:bg-blue-950 transition delay-150 ease-in-out hover:shadow-md py-2 px-4 rounded-md">
@@ -271,7 +277,7 @@ export default function Header() {
             <div
                 className={`fixed h-screen bg-slate-600 ${
                     openCartItem ? "top-0" : "-top-full"
-                } right-0 w-96 pt-16 md:pt-36 z-20 transition-all duration-300`}
+                } right-0 w-96 pt-24 md:pt-28 z-20 transition-all duration-300`}
             >
                 <div
                     className="text-white font-bold text-2xl ml-4 cursor-pointer"
@@ -386,6 +392,108 @@ export default function Header() {
                 </div>
             </div>
             {/* END Category */}
+
+            {/* Account Thumbnail */}
+            <div
+                className={`${
+                    openSidebar ? "md:top-28 top-[78px]" : "-top-32"
+                } fixed w-full max-w-72 md:max-w-36 shadow-lg bg-white right-4 z-40 transition-all ease-in-out duration-300 flex flex-row justify-between rounded-sm`}
+            >
+                <div className="w-1/2 md:hidden">
+                    <ul className="px-6 py-4 flex flex-1 flex-col item-center justify-center  overflow-x-auto font-semibold text-blue-950">
+                        <li className="whitespace-nowrap flex items-center cursor-pointer text-base mb-1">
+                            Home
+                        </li>
+                        <li className="whitespace-nowrap flex items-center cursor-pointer text-base mb-1">
+                            Katalog
+                        </li>
+                        <li className="whitespace-nowrap flex items-center cursor-pointer text-base mb-1">
+                            Promo
+                        </li>
+                        <li className="whitespace-nowrap flex items-center cursor-pointer text-base mb-1">
+                            Cara Belanja
+                        </li>
+                    </ul>
+                </div>
+                <div className="mb-3 border-l border-l-blue-950 w-1/2 md:w-full">
+                    <ul className="text-lg font-semibold px-3 py-4 text-blue-950">
+                        <li
+                            className="mb-2 w-full flex items-center justify-center"
+                            onClick={() => setOpenLogin(true)}
+                        >
+                            <button
+                                className="bg-white hover:text-white text-blue-950 border border-blue-900 font-semibold hover:bg-blue-950 transition delay-150 ease-in-out hover:shadow-md py-2 px-4 rounded-md"
+                                onClick={() => setOpenLogin(true)}
+                            >
+                                Masuk
+                            </button>
+                        </li>
+                        <li className="mb-2 w-full flex items-center justify-center">
+                            <button className="bg-white hover:text-white text-blue-950 border border-blue-900 font-semibold hover:bg-blue-950 transition delay-150 ease-in-out hover:shadow-md py-2 px-4 rounded-md">
+                                Daftar
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            {/* End Account Thumbnail */}
+
+            {/* Login PopUp/Modal */}
+            <div
+                className={`w-full ${
+                    openLogin ? "block" : "hidden"
+                } transition-all duration-300 delay-200 ease-in-out`}
+            >
+                <div
+                    className="fixed z-[60] w-screen h-screen bg-slate-500 opacity-30"
+                    onClick={() => setOpenLogin(false)}
+                ></div>
+                <div
+                    className={`fixed md:top-32 top-[78px] w-full max-w-96 bg-white inset-x-0 mx-auto z-[65] rounded-md shadow-md transition-all scale-100 delay-300 `}
+                >
+                    <div
+                        className="absolute right-2 top-1 cursor-pointer"
+                        onClick={() => setOpenLogin(false)}
+                    >
+                        <XMarkIcon className="h-5 w-5" />
+                    </div>
+                    <div className="w-full px-8 py-6">
+                        <h1 className="mb-4 text-2xl font-bold text-center">
+                            Masuk
+                        </h1>
+                        <form action="" method="post">
+                            <input
+                                type="text"
+                                className="block w-full rounded-md py-1.5 px-3 text-gray-900 border-0 ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-blue-500 focus:outline-none mb-3"
+                                placeholder="User Id"
+                            />
+                            <input
+                                type="password"
+                                className="block w-full rounded-md py-1.5 px-3 text-gray-900 border-0 ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-blue-500 focus:outline-none mb-1"
+                                placeholder="Password"
+                            />
+                            <p className="text-sm text-slate-500 mb-4 text-right cursor-pointer hover:text-slate-700">
+                                Lupa kata sandi ?
+                            </p>
+                            <div className="flex items-center justify-center">
+                                <button className="w-full py-1.5 rounded-md shadow-md font-semibold text-white bg-blue-950">
+                                    Masuk
+                                </button>
+                            </div>
+                        </form>
+                        <p className="text-center font-thin text-slate-500 mt-2 text-sm">
+                            Tidak memiliki Akun?{" "}
+                            <a
+                                href=""
+                                className="font-medium text-blue-950 hover:text-blue-900"
+                            >
+                                Daftar disini
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {/* End Login PopUp/Modal */}
         </>
     );
 }
