@@ -85,4 +85,12 @@ class ProductController extends Controller
         LEFT JOIN (SELECT FifoProdId,SUM(fifoJumlah) AS Stok FROM ref_prod_fifo WHERE FifoGudangId='01' GROUP BY FifoProdId) AS stok ON prodId=FifoProdId
         WHERE prodUM IN ('C','D','E','F') AND LEFT(prodId,2) IN ('11')  AND stok >=1 ORDER BY prodTerbit DESC LIMIT 10");
     }
+
+    public function getProdukPilihan()
+    {
+        return DB::select("SELECT prodId,ProdDesc3,prodISBN,prodPrice1,prodPrice2,DATE(prodTerbit) terbit,IFNULL(stok,0) stok,prodBerat,prodFormat FROM ref_tampil
+        LEFT JOIN ref_prod_invtf ON prodId=tamProdID
+        LEFT JOIN (SELECT FifoProdId,SUM(fifoJumlah) AS Stok FROM ref_prod_fifo WHERE FifoGudangId='01' GROUP BY FifoProdId) AS stok ON prodId=FifoProdId
+        WHERE prodUM IN ('C','D','E','F') AND tamJenis ='1' ORDER BY tamLastUpdate,prodTerbit DESC LIMIT 5");
+    }
 }

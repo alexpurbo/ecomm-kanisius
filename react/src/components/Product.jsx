@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import ProductList from "./ProductList";
 import ProductListWithIcon from "./ProductListWithIcon";
 import axiosClient from "../axios";
+import ProductListLoading from "./ProductListLoading";
 
 export default function Product() {
     const [newProducts, setNewProducts] = useState([]);
@@ -18,6 +19,12 @@ export default function Product() {
         });
     };
 
+    const getProdukPilihan = () => {
+        axiosClient.get("/produk-pilihan").then(({ data }) => {
+            setProdukPilihan(data);
+        });
+    };
+
     const getSpiritualProduct = () => {
         axiosClient.get("/benda-rohani").then(({ data }) => {
             setBendaRohani(data);
@@ -27,6 +34,7 @@ export default function Product() {
     useEffect(() => {
         getNewProduct();
         getSpiritualProduct();
+        getProdukPilihan();
     }, []);
 
     // console.log(newProducts);
@@ -38,13 +46,19 @@ export default function Product() {
                 <ProductListWithIcon
                     title="Produk Pilihan"
                     color="bg-red-600"
+                    products={produkPilihan}
                 />
                 <ProductList title="Benda Rohani" dataProducts={bendaRohani} />
                 <ProductListWithIcon
                     title="Benda Rohani Pilihan"
                     color="bg-blue-600"
+                    products={produkPilihan}
                 />
-                <ProductListWithIcon title="Best Seller" color="bg-pink-600" />
+                <ProductListWithIcon
+                    title="Best Seller"
+                    color="bg-pink-600"
+                    products={produkPilihan}
+                />
             </div>
         </div>
     );

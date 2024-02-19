@@ -24,4 +24,5 @@ Route::apiResource('kel-kategori', KelKategoryController::class);
 Route::get('testQuery', [KelKategoryController::class, 'testQuery']);
 Route::get('new-products', [ProductController::class, 'getNewProducts']);
 route::get('benda-rohani', [ProductController::class, 'getSpiritualProducts']);
+route::get('produk-pilihan', [ProductController::class, 'getProdukPilihan']);
 route::get('product/{id}', [ProductController::class, 'show']);

@@ -255,8 +255,8 @@ export default function Header() {
                     <nav className="hidden md:block border-t border-t-blue-950 my-2 px-4">
                         <div className="relative overflow-y-auto ">
                             <ul className="flex flex-1 item-center justify-center  overflow-y-auto space-x-4 font-semibold text-blue-950 pt-1">
-                                <li className="whitespace-nowrap flex items-center cursor-pointer text-sm">
-                                    Home
+                                <li className="whitespace-nowrap flex items-center text-sm">
+                                    <a href="/">Home</a>
                                 </li>
                                 <li className="whitespace-nowrap flex items-center cursor-pointer text-sm">
                                     Katalog
