@@ -36,10 +36,12 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        $product = DB::select("SELECT prodId,ProdDesc3,prodISBN,prodPrice1,prodPrice2,DATE(prodTerbit) terbit,IFNULL(stok,0) stok,prodBerat,prodFormat, prodKet, prodMetaTag, prodLink,
-        prodHalaman, prodUkuran FROM ref_prod_invtf 
-        LEFT JOIN (SELECT FifoProdId,SUM(fifoJumlah) AS Stok FROM ref_prod_fifo WHERE FifoGudangId='01' GROUP BY FifoProdId) AS stok ON prodId=FifoProdId
-        WHERE prodUM IN ('C','D','E','F') AND prodId='" . $id . "'");
+        // $product = DB::select("SELECT prodId,ProdDesc3,prodISBN,prodPrice1,prodPrice2,DATE(prodTerbit) terbit,IFNULL(stok,0) stok,prodBerat,prodFormat, prodKet, prodMetaTag, prodLink,
+        // prodHalaman, prodUkuran FROM ref_prod_invtf 
+        // LEFT JOIN (SELECT FifoProdId,SUM(fifoJumlah) AS Stok FROM ref_prod_fifo WHERE FifoGudangId='01' GROUP BY FifoProdId) AS stok ON prodId=FifoProdId
+        // WHERE prodUM IN ('C','D','E','F') AND prodId='" . $id . "'");
+
+        $product = DB::select("SELECT prodID,ProdDesc3,prodISBN,prodPrice1,prodPrice2,prodTerbit,prodKet FROM ref_prod_invtf WHERE prodID='" . $id . "'");
 
         return response()->json(['data' => $product], 200);
     }
@@ -69,9 +71,13 @@ class ProductController extends Controller
 
     public function getNewProducts()
     {
-        $newProducts = DB::select("SELECT prodId,ProdDesc3,prodISBN,prodPrice1,prodPrice2,DATE(prodTerbit) terbit,IFNULL(stok,0) stok,prodBerat,prodFormat 
+        // $newProducts = DB::select("SELECT prodId,ProdDesc3,prodISBN,prodPrice1,prodPrice2,DATE(prodTerbit) terbit,IFNULL(stok,0) stok,prodBerat,prodFormat 
+        // FROM ref_prod_invtf 
+        // LEFT JOIN (SELECT FifoProdId,SUM(fifoJumlah) AS Stok FROM ref_prod_fifo WHERE FifoGudangId='01' GROUP BY FifoProdId) AS stok ON prodId=FifoProdId
+        // WHERE prodUM IN ('C','D','E','F') AND LEFT(prodId,2)='10'  AND stok >=10  ORDER BY prodTerbit DESC LIMIT 10");
+
+        $newProducts = DB::select("SELECT prodId,ProdDesc3,prodISBN,prodPrice1,prodPrice2,DATE(prodTerbit) terbit,prodBerat,prodFormat,prodUkuran,Stok,gudang02
         FROM ref_prod_invtf 
-        LEFT JOIN (SELECT FifoProdId,SUM(fifoJumlah) AS Stok FROM ref_prod_fifo WHERE FifoGudangId='01' GROUP BY FifoProdId) AS stok ON prodId=FifoProdId
         WHERE prodUM IN ('C','D','E','F') AND LEFT(prodId,2)='10'  AND stok >=10  ORDER BY prodTerbit DESC LIMIT 10");
 
         // return response()->json($newProducts);
@@ -80,17 +86,25 @@ class ProductController extends Controller
 
     public function getSpiritualProducts()
     {
-        return DB::select("SELECT prodId,ProdDesc3,prodISBN,prodPrice1,prodPrice2,DATE(prodTerbit) terbit,IFNULL(stok,0) stok,prodBerat,prodFormat 
+        // return DB::select("SELECT prodId,ProdDesc3,prodISBN,prodPrice1,prodPrice2,DATE(prodTerbit) terbit,IFNULL(stok,0) stok,prodBerat,prodFormat 
+        // FROM ref_prod_invtf 
+        // LEFT JOIN (SELECT FifoProdId,SUM(fifoJumlah) AS Stok FROM ref_prod_fifo WHERE FifoGudangId='01' GROUP BY FifoProdId) AS stok ON prodId=FifoProdId
+        // WHERE prodUM IN ('C','D','E','F') AND LEFT(prodId,2) IN ('11')  AND stok >=1 ORDER BY prodTerbit DESC LIMIT 10");
+
+        return DB::select("SELECT prodId,ProdDesc3,prodISBN,prodPrice1,prodPrice2,DATE(prodTerbit) terbit,prodBerat,prodFormat,prodUkuran,stok,gudang02
         FROM ref_prod_invtf 
-        LEFT JOIN (SELECT FifoProdId,SUM(fifoJumlah) AS Stok FROM ref_prod_fifo WHERE FifoGudangId='01' GROUP BY FifoProdId) AS stok ON prodId=FifoProdId
         WHERE prodUM IN ('C','D','E','F') AND LEFT(prodId,2) IN ('11')  AND stok >=1 ORDER BY prodTerbit DESC LIMIT 10");
     }
 
     public function getProdukPilihan()
     {
-        return DB::select("SELECT prodId,ProdDesc3,prodISBN,prodPrice1,prodPrice2,DATE(prodTerbit) terbit,IFNULL(stok,0) stok,prodBerat,prodFormat FROM ref_tampil
+        // return DB::select("SELECT prodId,ProdDesc3,prodISBN,prodPrice1,prodPrice2,DATE(prodTerbit) terbit,IFNULL(stok,0) stok,prodBerat,prodFormat FROM ref_tampil
+        // LEFT JOIN ref_prod_invtf ON prodId=tamProdID
+        // LEFT JOIN (SELECT FifoProdId,SUM(fifoJumlah) AS Stok FROM ref_prod_fifo WHERE FifoGudangId='01' GROUP BY FifoProdId) AS stok ON prodId=FifoProdId
+        // WHERE prodUM IN ('C','D','E','F') AND tamJenis ='1' ORDER BY tamLastUpdate,prodTerbit DESC LIMIT 5");
+
+        return DB::select("SELECT prodId,ProdDesc3,prodISBN,prodPrice1,prodPrice2,DATE(prodTerbit) terbit,stok,gudang02,prodBerat,prodFormat FROM ref_tampil
         LEFT JOIN ref_prod_invtf ON prodId=tamProdID
-        LEFT JOIN (SELECT FifoProdId,SUM(fifoJumlah) AS Stok FROM ref_prod_fifo WHERE FifoGudangId='01' GROUP BY FifoProdId) AS stok ON prodId=FifoProdId
         WHERE prodUM IN ('C','D','E','F') AND tamJenis ='1' ORDER BY tamLastUpdate,prodTerbit DESC LIMIT 5");
     }
 }

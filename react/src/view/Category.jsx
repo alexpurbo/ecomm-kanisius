@@ -8,7 +8,7 @@ export default function Category() {
     return (
         <div>
             <Header />
-            <Breadcrumbs />
+            {/* <Breadcrumbs /> */}
             <CategoryDetail />
             <Footer />
         </div>

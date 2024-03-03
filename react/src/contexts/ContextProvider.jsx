@@ -2,6 +2,9 @@ import React, { createContext, useContext, useState } from "react";
 
 const StateContext = createContext({
     categorys: [],
+    usertoken: null,
+    setCurrentUser: () => {},
+    setUserToken: () => {},
 });
 
 const tmpCategory = [
@@ -151,7 +154,7 @@ const tmpCategory = [
                     },
                     {
                         id: 3,
-                        subCategoryName: "SMA/SMK",
+                        subCategoryName: "SMA-SMK",
                     },
                 ],
             },
@@ -161,7 +164,7 @@ const tmpCategory = [
                 subCategory: [
                     {
                         id: 4,
-                        subCategoryName: "TK / PAUD",
+                        subCategoryName: "TK-PAUD",
                     },
                 ],
             },
@@ -290,10 +293,27 @@ const tmpCategory = [
 
 export const ContextProvider = ({ children }) => {
     const [categorys, setCategorys] = useState(tmpCategory);
+    const [currentUser, setCurrentUser] = useState({});
+    const [userToken, _setUserToken] = useState(
+        localStorage.getItem("TOKEN") || ""
+    );
+
+    const setUserToken = (token) => {
+        if (token) {
+            localStorage.setItem("TOKEN", token);
+        } else {
+            localStorage.removeItem("TOKEN");
+        }
+        _setUserToken(token);
+    };
     return (
         <StateContext.Provider
             value={{
                 categorys,
+                currentUser,
+                setCurrentUser,
+                userToken,
+                setUserToken,
             }}
         >
             {children}

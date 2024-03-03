@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\KelKategoryController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Http\Request;
@@ -16,8 +17,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/me', [AuthController::class, 'me']);
 });
 
 Route::apiResource('kel-kategori', KelKategoryController::class);
@@ -26,3 +28,6 @@ Route::get('new-products', [ProductController::class, 'getNewProducts']);
 route::get('benda-rohani', [ProductController::class, 'getSpiritualProducts']);
 route::get('produk-pilihan', [ProductController::class, 'getProdukPilihan']);
 route::get('product/{id}', [ProductController::class, 'show']);
+
+route::post('signup', [AuthController::class, 'signup']);
+route::post('login', [AuthController::class, 'login']);

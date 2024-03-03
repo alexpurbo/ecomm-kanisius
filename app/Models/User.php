@@ -12,16 +12,22 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
+
+    // public $table = 'ref_customer';
+    public $table = 'ref_cust_online';
+    protected $primaryKey = 'C_ID';
+    // protected $keyType = 'double';
+    public $timestamps = false;
+
+    // protected $fillable = ['custEmail, custPassword, custNama'];
+    // protected $guarded = ['C_ID'];
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
+    protected $fillable = ['custID', 'custEmail', 'custPassword', 'custInisial', 'custNama', 'custInstansi', 'custAlamat', 'custPropinsi', 'custKota', 'custKecatamatan', 'custKodepos', 'custTelp', 'custAwal', 'custAkhir'];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -29,7 +35,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $hidden = [
-        'password',
+        'custPassword',
         'remember_token',
     ];
 
@@ -41,4 +47,9 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function getAuthPassword()
+    {
+        return $this->custPassword;
+    }
 }

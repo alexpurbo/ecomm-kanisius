@@ -7,11 +7,14 @@ import {
     Bars3Icon,
     XCircleIcon,
     ArrowLeftEndOnRectangleIcon,
+    UserIcon,
+    ArrowRightStartOnRectangleIcon,
 } from "@heroicons/react/24/solid";
 import React, { useEffect, useState } from "react";
 import logo from "../assets/img/kanisius.png";
 import logoSmall from "../assets/img/icon.png";
 import { useStateContext } from "../contexts/ContextProvider";
+import axiosClient from "../axios";
 
 export default function Header() {
     const [openSidebar, setOpenSidebar] = useState(false);
@@ -26,6 +29,13 @@ export default function Header() {
     const category = useStateContext();
     const [openAccountThumb, setOpenAccountThumb] = useState(false);
     const [openLogin, setOpenLogin] = useState(false);
+
+    const { userToken, currentUser, setCurrentUser, setUserToken } =
+        useStateContext();
+    const [custEmail, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState({ __html: "" });
+    const [openProfileList, setOpenProfileList] = useState(false);
 
     // console.log(category);
     const onCategoryHover = (id) => {
@@ -47,9 +57,60 @@ export default function Header() {
 
     useEffect(() => {
         setCategoryDetails(category.categorys[0]);
+        // console.log(userToken);
+        if (userToken) {
+            getUserData();
+        }
+        // console.log(currentUser);
     }, []);
 
     // console.log(categoryDetails);
+
+    const onLoginSubmit = (ev) => {
+        ev.preventDefault();
+        // setError({ __html: "" });
+
+        axiosClient
+            .post("/login", {
+                custEmail,
+                password,
+            })
+            .then(({ data }) => {
+                // setCurrentUser(data.user);
+                setUserToken(data.token);
+                getUserData();
+                setOpenLogin(false);
+
+                // console.log(data);
+            })
+            .catch((error) => {
+                if (error.response) {
+                    const finalErrors = Object.values(
+                        error.response.data.errors
+                    ).reduce((accum, next) => [...accum, ...next], []);
+                    setError({ __html: finalErrors.join("<br>") });
+                }
+                console.error(error);
+            });
+    };
+
+    const getUserData = () => {
+        axiosClient.get("/me").then(({ data }) => {
+            console.log("getUserData dijalankan");
+            setCurrentUser(data);
+            console.log(data);
+        });
+    };
+
+    const logout = (ev) => {
+        ev.preventDefault();
+        axiosClient.post("/logout").then((res) => {
+            setCurrentUser({});
+            setUserToken(null);
+            setOpenProfileList(false);
+            setOpenSidebar(false);
+        });
+    };
 
     return (
         <>
@@ -61,7 +122,7 @@ export default function Header() {
                 <div className="w-full max-w-7xl mx-auto px-8">
                     <nav className="relative flex flex-row items-center justify-between mt-2 mb-4">
                         {/* Logo */}
-                        <div className="">
+                        <div className="w-1/5">
                             <a
                                 href="/"
                                 className="font-bold text-lg text-white"
@@ -145,41 +206,100 @@ export default function Header() {
                         {/* END Floating Search */}
 
                         {/* Navbar/Menu item Large */}
-                        <ul className="hidden lg:flex items-center justify-center gap-6 text-white">
-                            <li
-                                className={`text-2xl cursor-pointer relative ${
-                                    openCartItem
-                                        ? "text-white"
-                                        : "text-slate-100"
-                                }`}
-                                onClick={() =>
-                                    setOpenCartItem(
-                                        (openCartItem) => !openCartItem
-                                    )
-                                }
+                        <div className="w-1/5 relative">
+                            <ul
+                                className={`hidden lg:flex items-center ${
+                                    userToken
+                                        ? "justify-between"
+                                        : "justify-center"
+                                } gap-6 text-white`}
                             >
-                                <ShoppingCartIcon className="h-7 w-7 font-bold text-blue-950" />
-                                <div className="absolute h-4 w-4 rounded-full bg-red-500 -top-2 -right-2 flex items-center justify-center">
-                                    <p className="p-1 text-[8px] text-white font-medium">
-                                        0
-                                    </p>
-                                </div>
-                            </li>
-                            <li className="flex gap-2">
-                                {/* <a href="">
-                                <MdOutlineLogin />
-                            </a> */}
-                                <button
-                                    className="bg-white hover:text-white text-blue-950 border border-blue-900 font-semibold hover:bg-blue-950 transition delay-150 ease-in-out hover:shadow-md py-2 px-4 rounded-md"
-                                    onClick={() => setOpenLogin(true)}
+                                <li
+                                    className={`text-2xl cursor-pointer relative ${
+                                        openCartItem
+                                            ? "text-white"
+                                            : "text-slate-100"
+                                    }`}
+                                    onClick={() =>
+                                        setOpenCartItem(
+                                            (openCartItem) => !openCartItem
+                                        )
+                                    }
                                 >
-                                    Masuk
-                                </button>
-                                <button className="bg-white hover:text-white text-blue-950 border border-blue-900 font-semibold hover:bg-blue-950 transition delay-150 ease-in-out hover:shadow-md py-2 px-4 rounded-md">
-                                    Daftar
-                                </button>
-                            </li>
-                        </ul>
+                                    <ShoppingCartIcon className="h-7 w-7 text-blue-950" />
+                                    <div className="absolute h-4 w-4 rounded-full bg-red-500 -top-2 -right-2 flex items-center justify-center">
+                                        <p className="p-1 text-[8px] text-white font-medium">
+                                            0
+                                        </p>
+                                    </div>
+                                </li>
+                                {userToken ? (
+                                    <li className="cursor-pointer">
+                                        <button
+                                            className="bg-white text-blue-950 border border-blue-900 font-semibold hover:bg-slate-50 transition delay-150 ease-in-out hover:shadow-md py-2 px-4 rounded-md"
+                                            onClick={() =>
+                                                setOpenProfileList(
+                                                    (openProfileList) =>
+                                                        !openProfileList
+                                                )
+                                            }
+                                        >
+                                            <div className="flex flex-row items-end">
+                                                <UserIcon className="h-7 w-7 text-blue-950 " />
+                                                <p className="text-blue-950 ml-2 font-medium text-sm">
+                                                    {currentUser.custNama}
+                                                </p>
+                                            </div>
+                                        </button>
+                                    </li>
+                                ) : (
+                                    <li className="flex gap-2">
+                                        <button
+                                            className="bg-white hover:text-white text-blue-950 border border-blue-900 font-semibold hover:bg-blue-950 transition delay-150 ease-in-out hover:shadow-md py-2 px-4 rounded-md"
+                                            onClick={() => setOpenLogin(true)}
+                                        >
+                                            Masuk
+                                        </button>
+                                        <a href="/signup">
+                                            <button className="bg-white hover:text-white text-blue-950 border border-blue-900 font-semibold hover:bg-blue-950 transition delay-150 ease-in-out hover:shadow-md py-2 px-4 rounded-md">
+                                                Daftar
+                                            </button>
+                                        </a>
+                                    </li>
+                                )}
+                            </ul>
+
+                            <div
+                                className={`${
+                                    openProfileList ? "absolute" : "hidden"
+                                } h-52 w-48 z-[60] right-0 top-14`}
+                            >
+                                <div className="bg-white shadow-xl border border-1 rounded-lg w-full h-full relative">
+                                    <div className="flex flex-col px-6 py-4">
+                                        <ul>
+                                            <li className="font-medium mb-1 cursor-pointer text-blue-950 hover:text-blue-900">
+                                                Setelan
+                                            </li>
+                                            <li className="font-medium mb-1 cursor-pointer text-blue-950 hover:text-blue-900">
+                                                Wishlist
+                                            </li>
+                                            <li className="font-medium mb-1 cursor-pointer text-blue-950 hover:text-blue-900">
+                                                Daftar Pembelian
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div
+                                        className="absolute right-4 bottom-4 flex flex-row cursor-pointer group"
+                                        onClick={(ev) => logout(ev)}
+                                    >
+                                        <ArrowRightStartOnRectangleIcon className="h-5 w-5 text-blue-950 mr-1 group-hover:text-blue-900" />{" "}
+                                        <span className="font-semibold text-blue-950 group-hover:text-blue-900">
+                                            Logout
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         {/* End Navbar/Menu item Large */}
 
                         {/* Navbar small */}
@@ -332,15 +452,17 @@ export default function Header() {
                             <ul className="md:px-4 pr-4">
                                 {/* {console.log(category)} */}
                                 {category.categorys.map((cat, index) => (
-                                    <li
-                                        className="font-semibold text-blue-950 text-base hover:text-blue-800 mb-4 cursor-pointer"
-                                        onMouseEnter={(evt) =>
-                                            onCategoryHover(index)
-                                        }
-                                        key={cat.id}
-                                    >
-                                        {cat.category_name}
-                                    </li>
+                                    <a href={`/category/${cat.category_name}`}>
+                                        <li
+                                            className="font-semibold text-blue-950 text-base hover:text-blue-800 mb-4 cursor-pointer"
+                                            onMouseEnter={(evt) =>
+                                                onCategoryHover(index)
+                                            }
+                                            key={cat.id}
+                                        >
+                                            {cat.category_name}
+                                        </li>
+                                    </a>
                                 ))}
                             </ul>
                         </div>
@@ -349,42 +471,58 @@ export default function Header() {
                                 {category.categorys[
                                     categoryActive
                                 ].category_details.map((dtl) => (
-                                    <li
-                                        className="whitespace-nowrap lg:w-1/4 sm:w-1/2 w-full flex flex-col cursor-pointer text-sm pb-2 hover:text-blue-900"
-                                        onMouseEnter={(ev) =>
-                                            onMouseEnterCategoryDtl(dtl.detail)
-                                        }
-                                        onMouseLeave={() =>
-                                            onMouseLeaveCategoryDtl()
-                                        }
-                                        key={dtl.detail}
+                                    <a
+                                        className="whitespace-nowrap lg:w-1/4 sm:w-1/2 w-full "
+                                        href={`/category/${category.categorys[categoryActive].category_name}/${dtl.detail}`}
                                     >
-                                        {dtl.detail}
-
-                                        {dtl.subCategory.length ? (
-                                            <ul
-                                                className={`${
-                                                    activeCategoryDetailName ==
+                                        <li
+                                            className="whitespace-nowrap lg:w-1/4 sm:w-1/2 w-full flex flex-col cursor-pointer text-sm pb-2 hover:text-blue-900"
+                                            onMouseEnter={(ev) =>
+                                                onMouseEnterCategoryDtl(
                                                     dtl.detail
-                                                        ? "flex"
-                                                        : "hidden"
-                                                } flex-wrap flex-col font-semibold text-blue-950 pt-1`}
-                                            >
-                                                {dtl.subCategory.map((sub) => (
-                                                    <li
-                                                        className="whitespace-nowrap lg:w-1/4 sm:w-1/2 w-full flex items-center cursor-pointer text-sm pb-2 pl-4 hover:text-blue-900"
-                                                        key={
-                                                            sub.subCategoryName
-                                                        }
-                                                    >
-                                                        {sub.subCategoryName}
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        ) : (
-                                            ""
-                                        )}
-                                    </li>
+                                                )
+                                            }
+                                            onMouseLeave={() =>
+                                                onMouseLeaveCategoryDtl()
+                                            }
+                                            key={dtl.detail}
+                                        >
+                                            {dtl.detail}
+
+                                            {dtl.subCategory.length ? (
+                                                <ul
+                                                    className={`${
+                                                        activeCategoryDetailName ==
+                                                        dtl.detail
+                                                            ? "flex"
+                                                            : "hidden"
+                                                    } flex-wrap flex-col font-semibold text-blue-950 pt-1`}
+                                                >
+                                                    {dtl.subCategory.map(
+                                                        (sub) => (
+                                                            <a
+                                                                className="whitespace-nowrap lg:w-1/4 sm:w-1/2 w-full"
+                                                                href={`/category/${category.categorys[categoryActive].category_name}/${dtl.detail}/${sub.subCategoryName}`}
+                                                            >
+                                                                <li
+                                                                    className="whitespace-nowrap lg:w-1/4 sm:w-1/2 w-full flex items-center cursor-pointer text-sm pb-2 pl-4 hover:text-blue-900"
+                                                                    key={
+                                                                        sub.subCategoryName
+                                                                    }
+                                                                >
+                                                                    {
+                                                                        sub.subCategoryName
+                                                                    }
+                                                                </li>
+                                                            </a>
+                                                        )
+                                                    )}
+                                                </ul>
+                                            ) : (
+                                                ""
+                                            )}
+                                        </li>
+                                    </a>
                                 ))}
                             </ul>
                         </div>
@@ -397,7 +535,7 @@ export default function Header() {
             <div
                 className={`${
                     openSidebar ? "md:top-28 top-[78px]" : "-top-32"
-                } fixed w-full max-w-72 md:max-w-36 shadow-lg bg-white right-4 z-40 transition-all ease-in-out duration-300 flex flex-row justify-between rounded-sm`}
+                } fixed w-full max-w-72 md:max-w-36 h-40 border border-1 shadow-lg bg-white right-4 z-40 transition-all ease-in-out duration-300 flex flex-row justify-between rounded-sm`}
             >
                 <div className="w-1/2 md:hidden">
                     <ul className="px-6 py-4 flex flex-1 flex-col item-center justify-center  overflow-x-auto font-semibold text-blue-950">
@@ -416,24 +554,53 @@ export default function Header() {
                     </ul>
                 </div>
                 <div className="mb-3 border-l border-l-blue-950 w-1/2 md:w-full">
-                    <ul className="text-lg font-semibold px-3 py-4 text-blue-950">
-                        <li
-                            className="mb-2 w-full flex items-center justify-center"
-                            onClick={() => setOpenLogin(true)}
-                        >
-                            <button
-                                className="bg-white hover:text-white text-blue-950 border border-blue-900 font-semibold hover:bg-blue-950 transition delay-150 ease-in-out hover:shadow-md py-2 px-4 rounded-md"
+                    {userToken ? (
+                        <div className="w-full h-full relative">
+                            <div className="flex flex-col px-6 py-4">
+                                <ul>
+                                    <li className="font-medium mb-1 cursor-pointer text-blue-950 hover:text-blue-900">
+                                        Setelan
+                                    </li>
+                                    <li className="font-medium mb-1 cursor-pointer text-blue-950 hover:text-blue-900">
+                                        Wishlist
+                                    </li>
+                                    <li className="font-medium mb-1 cursor-pointer text-blue-950 hover:text-blue-900">
+                                        Pembelian
+                                    </li>
+                                </ul>
+                            </div>
+                            <div
+                                className="absolute right-2 bottom-1 flex flex-row cursor-pointer group"
+                                onClick={(ev) => logout(ev)}
+                            >
+                                <ArrowRightStartOnRectangleIcon className="h-5 w-5 text-blue-950 mr-1 group-hover:text-blue-900" />{" "}
+                                <span className="font-semibold text-blue-950 group-hover:text-blue-900">
+                                    Logout
+                                </span>
+                            </div>
+                        </div>
+                    ) : (
+                        <ul className="text-lg font-semibold px-3 py-4 text-blue-950">
+                            <li
+                                className="mb-2 w-full flex items-center justify-center"
                                 onClick={() => setOpenLogin(true)}
                             >
-                                Masuk
-                            </button>
-                        </li>
-                        <li className="mb-2 w-full flex items-center justify-center">
-                            <button className="bg-white hover:text-white text-blue-950 border border-blue-900 font-semibold hover:bg-blue-950 transition delay-150 ease-in-out hover:shadow-md py-2 px-4 rounded-md">
-                                Daftar
-                            </button>
-                        </li>
-                    </ul>
+                                <button
+                                    className="bg-white hover:text-white text-blue-950 border border-blue-900 font-semibold hover:bg-blue-950 transition delay-150 ease-in-out hover:shadow-md py-2 px-4 rounded-md"
+                                    onClick={() => setOpenLogin(true)}
+                                >
+                                    Masuk
+                                </button>
+                            </li>
+                            <li className="mb-2 w-full flex items-center justify-center">
+                                <a href="/signup">
+                                    <button className="bg-white hover:text-white text-blue-950 border border-blue-900 font-semibold hover:bg-blue-950 transition delay-150 ease-in-out hover:shadow-md py-2 px-4 rounded-md">
+                                        Daftar
+                                    </button>
+                                </a>
+                            </li>
+                        </ul>
+                    )}
                 </div>
             </div>
             {/* End Account Thumbnail */}
@@ -461,14 +628,26 @@ export default function Header() {
                         <h1 className="mb-4 text-2xl font-bold text-center">
                             Masuk
                         </h1>
-                        <form action="" method="post">
+                        <form action="" method="post" onSubmit={onLoginSubmit}>
                             <input
-                                type="text"
+                                id="email"
+                                name="custEmail"
+                                type="email"
+                                autoComplete="email"
+                                required
+                                value={custEmail}
+                                onChange={(ev) => setEmail(ev.target.value)}
                                 className="block w-full rounded-md py-1.5 px-3 text-gray-900 border-0 ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-blue-500 focus:outline-none mb-3"
                                 placeholder="User Id"
                             />
                             <input
+                                id="password"
+                                name="password"
                                 type="password"
+                                autoComplete="current-password"
+                                required
+                                value={password}
+                                onChange={(ev) => setPassword(ev.target.value)}
                                 className="block w-full rounded-md py-1.5 px-3 text-gray-900 border-0 ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-blue-500 focus:outline-none mb-1"
                                 placeholder="Password"
                             />
