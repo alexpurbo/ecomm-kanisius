@@ -16,7 +16,7 @@ export default function Login() {
 
     const onLoginSubmit = (ev) => {
         ev.preventDefault();
-        // setError({ __html: "" });
+        setError({ __html: "" });
 
         axiosClient
             .post("/login", {
@@ -26,9 +26,6 @@ export default function Login() {
             .then(({ data }) => {
                 setCurrentUser(data.user);
                 setUserToken(data.token);
-                // getUserData();
-                // setOpenLogin(false);
-                // console.log(data);
                 returnToHome();
             })
             .catch((error) => {

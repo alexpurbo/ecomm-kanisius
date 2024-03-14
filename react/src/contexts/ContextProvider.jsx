@@ -1,10 +1,16 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 
 const StateContext = createContext({
     categorys: [],
     usertoken: null,
+    cart: [],
+    openLogin: false,
     setCurrentUser: () => {},
     setUserToken: () => {},
+    setCart: () => {},
+    setOpenLogin: () => {},
+    openCartModal: false,
+    setOpenCartModal: () => {},
 });
 
 const tmpCategory = [
@@ -297,6 +303,12 @@ export const ContextProvider = ({ children }) => {
     const [userToken, _setUserToken] = useState(
         localStorage.getItem("TOKEN") || ""
     );
+    const [cart, setCart] = useState([]);
+    const [itemAmount, setItemAmount] = useState(0);
+
+    const [total, setTotal] = useState(0);
+    const [openLogin, setOpenLogin] = useState(false);
+    const [openCartModal, setOpenCartModal] = useState(false);
 
     const setUserToken = (token) => {
         if (token) {
@@ -306,6 +318,7 @@ export const ContextProvider = ({ children }) => {
         }
         _setUserToken(token);
     };
+
     return (
         <StateContext.Provider
             value={{
@@ -314,6 +327,14 @@ export const ContextProvider = ({ children }) => {
                 setCurrentUser,
                 userToken,
                 setUserToken,
+                cart,
+                setCart,
+                openLogin,
+                setOpenLogin,
+                itemAmount,
+                setItemAmount,
+                openCartModal,
+                setOpenCartModal,
             }}
         >
             {children}

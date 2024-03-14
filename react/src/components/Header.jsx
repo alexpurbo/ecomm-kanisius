@@ -15,6 +15,8 @@ import logo from "../assets/img/kanisius.png";
 import logoSmall from "../assets/img/icon.png";
 import { useStateContext } from "../contexts/ContextProvider";
 import axiosClient from "../axios";
+import LoginModal from "./LoginModal";
+import CartModal from "./CartModal";
 
 export default function Header() {
     const [openSidebar, setOpenSidebar] = useState(false);
@@ -28,19 +30,31 @@ export default function Header() {
     const [subCategorys, setsubCategorys] = useState(false);
     const category = useStateContext();
     const [openAccountThumb, setOpenAccountThumb] = useState(false);
-    const [openLogin, setOpenLogin] = useState(false);
+    // const [openLogin, setOpenLogin] = useState(false);
+    const [cartData, setCartData] = useState([]);
+    const [cartAmount, setCartAmount] = useState();
 
-    const { userToken, currentUser, setCurrentUser, setUserToken } =
-        useStateContext();
+    const {
+        userToken,
+        currentUser,
+        setCurrentUser,
+        setUserToken,
+        setCart,
+        cart,
+        openLogin,
+        setOpenLogin,
+        itemAmount,
+        setItemAmount,
+        openCartModal,
+        setOpenCartModal,
+    } = useStateContext();
     const [custEmail, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState({ __html: "" });
     const [openProfileList, setOpenProfileList] = useState(false);
 
-    // console.log(category);
     const onCategoryHover = (id) => {
         setCategoryActive(id);
-        // console.log("active cate " + id);
     };
 
     const onCategoryDtlClick = (categoryNameDtl) => {
@@ -57,14 +71,12 @@ export default function Header() {
 
     useEffect(() => {
         setCategoryDetails(category.categorys[0]);
-        // console.log(userToken);
         if (userToken) {
             getUserData();
+            getCartData();
+            getCartAmount();
         }
-        // console.log(currentUser);
     }, []);
-
-    // console.log(categoryDetails);
 
     const onLoginSubmit = (ev) => {
         ev.preventDefault();
@@ -76,12 +88,9 @@ export default function Header() {
                 password,
             })
             .then(({ data }) => {
-                // setCurrentUser(data.user);
                 setUserToken(data.token);
                 getUserData();
                 setOpenLogin(false);
-
-                // console.log(data);
             })
             .catch((error) => {
                 if (error.response) {
@@ -90,15 +99,30 @@ export default function Header() {
                     ).reduce((accum, next) => [...accum, ...next], []);
                     setError({ __html: finalErrors.join("<br>") });
                 }
-                console.error(error);
+                // console.error(error);
             });
     };
 
     const getUserData = () => {
         axiosClient.get("/me").then(({ data }) => {
-            console.log("getUserData dijalankan");
             setCurrentUser(data);
+        });
+    };
+
+    const getCartData = () => {
+        axiosClient.get("/cart").then(({ data }) => {
             console.log(data);
+            setCartData(data.data);
+            setCart(data.data);
+        });
+    };
+
+    const getCartAmount = () => {
+        axiosClient.get("/cartAmount").then(({ data }) => {
+            // setCartAmount(data[0].cart_amount);
+            if (data.length > 0) {
+                setItemAmount(data[0].cart_amount);
+            }
         });
     };
 
@@ -109,6 +133,8 @@ export default function Header() {
             setUserToken(null);
             setOpenProfileList(false);
             setOpenSidebar(false);
+            setItemAmount(0);
+            setCart([]);
         });
     };
 
@@ -221,15 +247,15 @@ export default function Header() {
                                             : "text-slate-100"
                                     }`}
                                     onClick={() =>
-                                        setOpenCartItem(
-                                            (openCartItem) => !openCartItem
+                                        setOpenCartModal(
+                                            (openCartModal) => !openCartModal
                                         )
                                     }
                                 >
                                     <ShoppingCartIcon className="h-7 w-7 text-blue-950" />
                                     <div className="absolute h-4 w-4 rounded-full bg-red-500 -top-2 -right-2 flex items-center justify-center">
                                         <p className="p-1 text-[8px] text-white font-medium">
-                                            0
+                                            {itemAmount}
                                         </p>
                                     </div>
                                 </li>
@@ -393,51 +419,9 @@ export default function Header() {
                     {/* End Sub Navbar, Home, help dll */}
                 </div>
             </header>
-            {/* Data Chart */}
-            <div
-                className={`fixed h-screen bg-slate-600 ${
-                    openCartItem ? "top-0" : "-top-full"
-                } right-0 w-96 pt-24 md:pt-28 z-20 transition-all duration-300`}
-            >
-                <div
-                    className="text-white font-bold text-2xl ml-4 cursor-pointer"
-                    onClick={() => setOpenCartItem(false)}
-                >
-                    <XMarkIcon className="h-5 w-5" />
-                </div>
-                <h3 className="text-white font-bold text-xl text-right mr-8">
-                    Item (0)
-                </h3>
-                <div className="border-b pt-2 border-b-white" />
-                <div className="mx-4 my-2 text-slate-100 text-2xl font-semibold flex items-center justify-center">
-                    No Item
-                </div>
-                <div className="absolute w-full bottom-0 right-0 border-t border-t-white">
-                    <div className="mx-8 my-4">
-                        <h4 className="text-slate-100 font font-semibold text-2xl text-right">
-                            Total = Rp 0,00
-                        </h4>
-                        <div className="flex items-center justify-end gap-2 mt-4">
-                            <button className="bg-red-400 hover:bg-red-500 hover:text-white px-4 py-2 rounded-md shadow-lg font-normal text-white">
-                                Clear
-                            </button>
-                            <button className="bg-blue-400 hover:bg-blue-500 hover:text-white px-4 py-2 rounded-md shadow-lg font-normal text-white">
-                                Checkout
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {/* END Data Chart */}
-
-            {/* Profile/Login */}
-            {/* <div className="fixed top-28 right-4 z-10 bg-white">
-                <XMarkIcon className="h-4 w-4" />
-                <div className="">
-
-                </div>
-            </div> */}
-            {/* END Profile/Login */}
+            {/* Modal popup Cart */}
+            <CartModal />
+            {/* END Modal popup Cart */}
 
             {/* Category */}
             <div
@@ -450,9 +434,11 @@ export default function Header() {
                     <div className="flex flex-row">
                         <div className="md:w-1/4 w-1/3 h-full max-h-72 overflow-auto scrollbar border-r-2 border-r-blue-950">
                             <ul className="md:px-4 pr-4">
-                                {/* {console.log(category)} */}
                                 {category.categorys.map((cat, index) => (
-                                    <a href={`/category/${cat.category_name}`}>
+                                    <a
+                                        href={`/category/${cat.category_name}`}
+                                        key={index}
+                                    >
                                         <li
                                             className="font-semibold text-blue-950 text-base hover:text-blue-800 mb-4 cursor-pointer"
                                             onMouseEnter={(evt) =>
@@ -470,10 +456,11 @@ export default function Header() {
                             <ul className="flex flex-wrap flex-row font-semibold text-blue-950 pt-1">
                                 {category.categorys[
                                     categoryActive
-                                ].category_details.map((dtl) => (
+                                ].category_details.map((dtl, index) => (
                                     <a
                                         className="whitespace-nowrap lg:w-1/4 sm:w-1/2 w-full "
                                         href={`/category/${category.categorys[categoryActive].category_name}/${dtl.detail}`}
+                                        key={index}
                                     >
                                         <li
                                             className="whitespace-nowrap lg:w-1/4 sm:w-1/2 w-full flex flex-col cursor-pointer text-sm pb-2 hover:text-blue-900"
@@ -535,143 +522,96 @@ export default function Header() {
             <div
                 className={`${
                     openSidebar ? "md:top-28 top-[78px]" : "-top-32"
-                } fixed w-full max-w-72 md:max-w-36 h-40 border border-1 shadow-lg bg-white right-4 z-40 transition-all ease-in-out duration-300 flex flex-row justify-between rounded-sm`}
+                } fixed w-full max-w-72 md:max-w-36 border border-1 shadow-lg bg-white right-4 z-40 transition-all ease-in-out duration-300 rounded-sm`}
             >
-                <div className="w-1/2 md:hidden">
-                    <ul className="px-6 py-4 flex flex-1 flex-col item-center justify-center  overflow-x-auto font-semibold text-blue-950">
-                        <li className="whitespace-nowrap flex items-center cursor-pointer text-base mb-1">
-                            Home
-                        </li>
-                        <li className="whitespace-nowrap flex items-center cursor-pointer text-base mb-1">
-                            Katalog
-                        </li>
-                        <li className="whitespace-nowrap flex items-center cursor-pointer text-base mb-1">
-                            Promo
-                        </li>
-                        <li className="whitespace-nowrap flex items-center cursor-pointer text-base mb-1">
-                            Cara Belanja
-                        </li>
-                    </ul>
-                </div>
-                <div className="mb-3 border-l border-l-blue-950 w-1/2 md:w-full">
-                    {userToken ? (
-                        <div className="w-full h-full relative">
-                            <div className="flex flex-col px-6 py-4">
-                                <ul>
-                                    <li className="font-medium mb-1 cursor-pointer text-blue-950 hover:text-blue-900">
-                                        Setelan
-                                    </li>
-                                    <li className="font-medium mb-1 cursor-pointer text-blue-950 hover:text-blue-900">
-                                        Wishlist
-                                    </li>
-                                    <li className="font-medium mb-1 cursor-pointer text-blue-950 hover:text-blue-900">
-                                        Pembelian
-                                    </li>
-                                </ul>
-                            </div>
-                            <div
-                                className="absolute right-2 bottom-1 flex flex-row cursor-pointer group"
-                                onClick={(ev) => logout(ev)}
-                            >
-                                <ArrowRightStartOnRectangleIcon className="h-5 w-5 text-blue-950 mr-1 group-hover:text-blue-900" />{" "}
-                                <span className="font-semibold text-blue-950 group-hover:text-blue-900">
-                                    Logout
-                                </span>
-                            </div>
+                <div
+                    className={`${
+                        userToken ? "block" : "hidden"
+                    } px-3 py-4 w-full flex items-center justify-center`}
+                >
+                    <button className="bg-white text-blue-950 border border-blue-900 font-semibold hover:bg-slate-50 transition delay-150 ease-in-out hover:shadow-md py-2 px-4 rounded-md">
+                        <div className="flex flex-row items-end">
+                            <UserIcon className="h-7 w-7 text-blue-950 " />
+                            <p className="text-blue-950 ml-2 font-medium text-sm">
+                                {currentUser.custNama}
+                            </p>
                         </div>
-                    ) : (
-                        <ul className="text-lg font-semibold px-3 py-4 text-blue-950">
-                            <li
-                                className="mb-2 w-full flex items-center justify-center"
-                                onClick={() => setOpenLogin(true)}
-                            >
-                                <button
-                                    className="bg-white hover:text-white text-blue-950 border border-blue-900 font-semibold hover:bg-blue-950 transition delay-150 ease-in-out hover:shadow-md py-2 px-4 rounded-md"
-                                    onClick={() => setOpenLogin(true)}
-                                >
-                                    Masuk
-                                </button>
+                    </button>
+                </div>
+                <div className="flex flex-row justify-between w-full">
+                    <div className="w-1/2 md:hidden">
+                        <ul className="px-6 py-4 flex flex-1 flex-col item-center justify-center  overflow-x-auto font-semibold text-blue-950">
+                            <li className="whitespace-nowrap flex items-center cursor-pointer text-base mb-1">
+                                Home
                             </li>
-                            <li className="mb-2 w-full flex items-center justify-center">
-                                <a href="/signup">
-                                    <button className="bg-white hover:text-white text-blue-950 border border-blue-900 font-semibold hover:bg-blue-950 transition delay-150 ease-in-out hover:shadow-md py-2 px-4 rounded-md">
-                                        Daftar
-                                    </button>
-                                </a>
+                            <li className="whitespace-nowrap flex items-center cursor-pointer text-base mb-1">
+                                Katalog
+                            </li>
+                            <li className="whitespace-nowrap flex items-center cursor-pointer text-base mb-1">
+                                Promo
+                            </li>
+                            <li className="whitespace-nowrap flex items-center cursor-pointer text-base mb-1">
+                                Cara Belanja
                             </li>
                         </ul>
-                    )}
+                    </div>
+                    <div
+                        className={`mb-3 border-l border-l-blue-950 w-1/2 md:w-full`}
+                    >
+                        {userToken ? (
+                            <div className="w-full h-full relative">
+                                <div className="flex flex-col px-6 py-4">
+                                    <ul>
+                                        <li className="font-medium mb-1 cursor-pointer text-blue-950 hover:text-blue-900">
+                                            Setelan
+                                        </li>
+                                        <li className="font-medium mb-1 cursor-pointer text-blue-950 hover:text-blue-900">
+                                            Wishlist
+                                        </li>
+                                        <li className="font-medium mb-1 cursor-pointer text-blue-950 hover:text-blue-900">
+                                            Pembelian
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div
+                                    className="absolute right-2 bottom-1 flex flex-row cursor-pointer group"
+                                    onClick={(ev) => logout(ev)}
+                                >
+                                    <ArrowRightStartOnRectangleIcon className="h-5 w-5 text-blue-950 mr-1 group-hover:text-blue-900" />{" "}
+                                    <span className="font-semibold text-blue-950 group-hover:text-blue-900">
+                                        Logout
+                                    </span>
+                                </div>
+                            </div>
+                        ) : (
+                            <ul className="text-lg font-semibold px-3 py-4 text-blue-950">
+                                <li
+                                    className="mb-2 w-full flex items-center justify-center"
+                                    onClick={() => setOpenLogin(true)}
+                                >
+                                    <button
+                                        className="bg-white hover:text-white text-blue-950 border border-blue-900 font-semibold hover:bg-blue-950 transition delay-150 ease-in-out hover:shadow-md py-2 px-4 rounded-md"
+                                        onClick={() => setOpenLogin(true)}
+                                    >
+                                        Masuk
+                                    </button>
+                                </li>
+                                <li className="mb-2 w-full flex items-center justify-center">
+                                    <a href="/signup">
+                                        <button className="bg-white hover:text-white text-blue-950 border border-blue-900 font-semibold hover:bg-blue-950 transition delay-150 ease-in-out hover:shadow-md py-2 px-4 rounded-md">
+                                            Daftar
+                                        </button>
+                                    </a>
+                                </li>
+                            </ul>
+                        )}
+                    </div>
                 </div>
             </div>
             {/* End Account Thumbnail */}
 
             {/* Login PopUp/Modal */}
-            <div
-                className={`w-full ${
-                    openLogin ? "block" : "hidden"
-                } transition-all duration-300 delay-200 ease-in-out`}
-            >
-                <div
-                    className="fixed z-[60] w-screen h-screen bg-slate-500 opacity-30"
-                    onClick={() => setOpenLogin(false)}
-                ></div>
-                <div
-                    className={`fixed md:top-32 top-[78px] w-full max-w-96 bg-white inset-x-0 mx-auto z-[65] rounded-md shadow-md transition-all scale-100 delay-300 `}
-                >
-                    <div
-                        className="absolute right-2 top-1 cursor-pointer"
-                        onClick={() => setOpenLogin(false)}
-                    >
-                        <XMarkIcon className="h-5 w-5" />
-                    </div>
-                    <div className="w-full px-8 py-6">
-                        <h1 className="mb-4 text-2xl font-bold text-center">
-                            Masuk
-                        </h1>
-                        <form action="" method="post" onSubmit={onLoginSubmit}>
-                            <input
-                                id="email"
-                                name="custEmail"
-                                type="email"
-                                autoComplete="email"
-                                required
-                                value={custEmail}
-                                onChange={(ev) => setEmail(ev.target.value)}
-                                className="block w-full rounded-md py-1.5 px-3 text-gray-900 border-0 ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-blue-500 focus:outline-none mb-3"
-                                placeholder="User Id"
-                            />
-                            <input
-                                id="password"
-                                name="password"
-                                type="password"
-                                autoComplete="current-password"
-                                required
-                                value={password}
-                                onChange={(ev) => setPassword(ev.target.value)}
-                                className="block w-full rounded-md py-1.5 px-3 text-gray-900 border-0 ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-blue-500 focus:outline-none mb-1"
-                                placeholder="Password"
-                            />
-                            <p className="text-sm text-slate-500 mb-4 text-right cursor-pointer hover:text-slate-700">
-                                Lupa kata sandi ?
-                            </p>
-                            <div className="flex items-center justify-center">
-                                <button className="w-full py-1.5 rounded-md shadow-md font-semibold text-white bg-blue-950">
-                                    Masuk
-                                </button>
-                            </div>
-                        </form>
-                        <p className="text-center font-thin text-slate-500 mt-2 text-sm">
-                            Tidak memiliki Akun?{" "}
-                            <a
-                                href=""
-                                className="font-medium text-blue-950 hover:text-blue-900"
-                            >
-                                Daftar disini
-                            </a>
-                        </p>
-                    </div>
-                </div>
-            </div>
+            <LoginModal />
             {/* End Login PopUp/Modal */}
         </>
     );

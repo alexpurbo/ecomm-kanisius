@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axiosClient from "../axios";
 import logo from "../assets/img/kanisius.png";
 import { useStateContext } from "../contexts/ContextProvider.jsx";
+import { Navigate } from "react-router-dom";
 
 export default function Signup() {
     const { setCurrentUser, setUserToken } = useStateContext();
@@ -25,6 +26,7 @@ export default function Signup() {
             .then(({ data }) => {
                 setCurrentUser(data.user);
                 setUserToken(data.token);
+
                 // console.log(data);
             })
             .catch((error) => {
@@ -46,6 +48,12 @@ export default function Signup() {
                     <img src={logo} alt="" className="" />
                 </a>
             </div>
+            {error.__html && (
+                <div
+                    className="mt-5 bg-red-500 rounded py-2 px-3 text-white text-center"
+                    dangerouslySetInnerHTML={error}
+                ></div>
+            )}
             <h1 className="mt-4 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
                 Daftar untuk Belanja di Toko Kanisius
             </h1>

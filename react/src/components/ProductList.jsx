@@ -11,12 +11,50 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { FormatRupiah } from "@arismun/format-rupiah";
 import ProductListLoading from "./ProductListLoading";
+import { PlusIcon } from "@heroicons/react/24/solid";
+import { useStateContext } from "../contexts/ContextProvider";
+import axiosClient from "../axios";
+import LoginModal from "./LoginModal";
 
 export default function ProductList({ title, dataProducts }) {
     // const [products, setProducts] = useState(dataProducts);
     const [screenSize, setScreenSize] = useState(window.innerWidth);
     const products = dataProducts;
+    const { currentUser, userToken, openLogin, setOpenLogin, setItemAmount } =
+        useStateContext();
+
     // console.log(products);
+
+    const onClick = async (prod) => {
+        if (currentUser.C_ID) {
+            axiosClient
+                .post("/cart", {
+                    customer: currentUser.C_ID,
+                    product: prod.prodId,
+                    amount: 1,
+                    price: prod.prodPrice2,
+                })
+                .then(({ data }) => {
+                    // console.log(data);
+                    setCartAmount();
+                })
+                .catch((error) => {
+                    if (error.response) {
+                        const finalErrors = Object.values(
+                            error.response.data.errors
+                        ).reduce((accum, next) => [...accum, ...next], []);
+                    }
+                });
+        } else {
+            setOpenLogin(true);
+        }
+    };
+
+    const setCartAmount = () => {
+        axiosClient.get("/cartAmount").then(({ data }) => {
+            setItemAmount(data[0].cart_amount);
+        });
+    };
 
     var settings = {
         slidesToShow: 6, // lg
@@ -69,6 +107,8 @@ export default function ProductList({ title, dataProducts }) {
 
     return (
         <>
+            {/* <LoginModal /> */}
+
             {products.length == 0 && <ProductListLoading />}
 
             {products.length > 0 && (
@@ -82,12 +122,12 @@ export default function ProductList({ title, dataProducts }) {
                                     {products.map((prod, index) => (
                                         // index < 6 && (
                                         <div className="px-2" key={prod.prodId}>
-                                            <div className="relative h-[310px] xs:h-[275px] sm:h-[310px] md:h-[295px] lg:h-[330px] border border-slate-200 rounded-lg shadow-md lg:w-[153px] md:w-[136px] sm:w-[196px] w-[142px]">
+                                            <div className="relative h-[310px] xs:h-[275px] sm:h-[310px] md:h-[295px] lg:h-[330px] border border-slate-200 rounded-lg shadow-md lg:w-[153px] md:w-[136px] sm:w-[196px] w-[142px] group transition">
                                                 <a
                                                     href={`/product-detail/${prod.prodId}`}
                                                 >
                                                     <div className="w-full p-2">
-                                                        <div className="flex items-center justify-center">
+                                                        <div className="flex items-center justify-center relative">
                                                             <img
                                                                 className="rounded-md lg:h-[207px] md:h-[182px] sm:h-[192px] xs:h-[164px] h-[192px]"
                                                                 src={
@@ -126,6 +166,16 @@ export default function ProductList({ title, dataProducts }) {
                                                         </div>
                                                     </div>
                                                 </a>
+                                                <div
+                                                    className="absolute hidden group-hover:block group-hover:-translate-x-9 bottom-[118px] bg-blue-950/70 hover:bg-blue-950 rounded-full h-7 w-7 -right-6 transition duration-700 ease-in-out cursor-pointer"
+                                                    onClick={() =>
+                                                        onClick(prod)
+                                                    }
+                                                >
+                                                    <div className="flex w-full h-full items-center justify-center">
+                                                        <PlusIcon className="h-5 w-5 text-white" />
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     ))}

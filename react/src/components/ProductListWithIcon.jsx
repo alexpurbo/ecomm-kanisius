@@ -12,8 +12,13 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import ProductListLoading from "./ProductListLoading";
 import { FormatRupiah } from "@arismun/format-rupiah";
+import { PlusIcon } from "@heroicons/react/24/solid";
+import { useStateContext } from "../contexts/ContextProvider";
+import axiosClient from "../axios";
 
 export default function ProductListWithIcon({ title, color, products }) {
+    const { currentUser, setOpenLogin, setItemAmount } = useStateContext();
+
     const settings = {
         slidesToShow: 5, // lg
         infinite: false,
@@ -55,6 +60,37 @@ export default function ProductListWithIcon({ title, color, products }) {
         ],
     };
 
+    const addToCart = async (prod) => {
+        if (currentUser.C_ID) {
+            axiosClient
+                .post("/cart", {
+                    customer: currentUser.C_ID,
+                    product: prod.prodId,
+                    amount: 1,
+                    price: prod.prodPrice2,
+                })
+                .then(({ data }) => {
+                    console.log(data);
+                    setCartAmount();
+                })
+                .catch((error) => {
+                    if (error.response) {
+                        const finalErrors = Object.values(
+                            error.response.data.errors
+                        ).reduce((accum, next) => [...accum, ...next], []);
+                    }
+                });
+        } else {
+            setOpenLogin(true);
+        }
+    };
+
+    const setCartAmount = () => {
+        axiosClient.get("/cartAmount").then(({ data }) => {
+            setItemAmount(data[0].cart_amount);
+        });
+    };
+
     return (
         <>
             {products.length == 0 && <ProductListLoading />}
@@ -88,11 +124,11 @@ export default function ProductListWithIcon({ title, color, products }) {
                                                 className="px-2"
                                                 key={prod.prodId}
                                             >
-                                                <div className="relative h-[310px] xs:h-[275px] sm:h-[310px] md:h-[295px] lg:h-[330px] w-full border border-slate-200 rounded-lg shadow-md cursor-pointer bg-white">
+                                                <div className="relative h-[310px] xs:h-[275px] sm:h-[310px] md:h-[295px] lg:h-[330px] w-full border border-slate-200 rounded-lg shadow-md cursor-pointer bg-white group transition">
                                                     <a
                                                         href={`/product-detail/${prod.prodId}`}
                                                     >
-                                                        <div className="w-full p-2">
+                                                        <div className="w-full p-2 flex items-center flex-col">
                                                             <img
                                                                 className="rounded-md lg:h-[207px] md:h-[182px] sm:h-[192px] xs:h-[164px] h-[192px]"
                                                                 src={
@@ -115,7 +151,7 @@ export default function ProductListWithIcon({ title, color, products }) {
                                                                 alt=""
                                                             />
                                                             <div className="p-2">
-                                                                <h2 className="font-semibold leading-tight mb-2 capitalized lg:text-base text-sm line-clamp-2">
+                                                                <h2 className="font-normal leading-tight mb-2 capitalized text-sm line-clamp-3">
                                                                     {
                                                                         prod.ProdDesc3
                                                                     }
@@ -132,6 +168,16 @@ export default function ProductListWithIcon({ title, color, products }) {
                                                             </div>
                                                         </div>
                                                     </a>
+                                                    <div
+                                                        className="absolute hidden group-hover:block group-hover:-translate-x-9 bottom-[118px] bg-blue-950/70 hover:bg-blue-950 rounded-full h-7 w-7 -right-6 transition duration-700 ease-in-out cursor-pointer"
+                                                        onClick={() =>
+                                                            addToCart(prod)
+                                                        }
+                                                    >
+                                                        <div className="flex w-full h-full items-center justify-center">
+                                                            <PlusIcon className="h-5 w-5 text-white" />
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         ))}
