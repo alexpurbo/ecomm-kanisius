@@ -17,6 +17,7 @@ import { useStateContext } from "../contexts/ContextProvider";
 import axiosClient from "../axios";
 import LoginModal from "./LoginModal";
 import CartModal from "./CartModal";
+import { Link } from "react-router-dom";
 
 export default function Header() {
     const [openSidebar, setOpenSidebar] = useState(false);
@@ -47,6 +48,9 @@ export default function Header() {
         setItemAmount,
         openCartModal,
         setOpenCartModal,
+        categoryData,
+        setCategoryData,
+        setCategorySelected,
     } = useStateContext();
     const [custEmail, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -70,37 +74,21 @@ export default function Header() {
     };
 
     useEffect(() => {
+        // console.log(category);
         setCategoryDetails(category.categorys[0]);
         if (userToken) {
             getUserData();
             getCartData();
             getCartAmount();
         }
+        getCategoryData();
     }, []);
 
-    const onLoginSubmit = (ev) => {
-        ev.preventDefault();
-        // setError({ __html: "" });
-
-        axiosClient
-            .post("/login", {
-                custEmail,
-                password,
-            })
-            .then(({ data }) => {
-                setUserToken(data.token);
-                getUserData();
-                setOpenLogin(false);
-            })
-            .catch((error) => {
-                if (error.response) {
-                    const finalErrors = Object.values(
-                        error.response.data.errors
-                    ).reduce((accum, next) => [...accum, ...next], []);
-                    setError({ __html: finalErrors.join("<br>") });
-                }
-                // console.error(error);
-            });
+    const getCategoryData = () => {
+        axiosClient.get("/kel-kategori").then(({ data }) => {
+            // console.log(data);
+            setCategoryData(data);
+        });
     };
 
     const getUserData = () => {
@@ -111,7 +99,7 @@ export default function Header() {
 
     const getCartData = () => {
         axiosClient.get("/cart").then(({ data }) => {
-            console.log(data);
+            // console.log(data[0].submenu);
             setCartData(data.data);
             setCart(data.data);
         });
@@ -434,83 +422,148 @@ export default function Header() {
                     <div className="flex flex-row">
                         <div className="md:w-1/4 w-1/3 h-full max-h-72 overflow-auto scrollbar border-r-2 border-r-blue-950">
                             <ul className="md:px-4 pr-4">
-                                {category.categorys.map((cat, index) => (
-                                    <a
-                                        href={`/category/${cat.category_name}`}
-                                        key={index}
-                                    >
-                                        <li
-                                            className="font-semibold text-blue-950 text-base hover:text-blue-800 mb-4 cursor-pointer"
-                                            onMouseEnter={(evt) =>
-                                                onCategoryHover(index)
-                                            }
-                                            key={cat.id}
-                                        >
-                                            {cat.category_name}
-                                        </li>
-                                    </a>
-                                ))}
+                                {categoryData
+                                    ? categoryData.map((cat, index) => (
+                                          <li
+                                              className="font-semibold text-blue-950 text-base mb-4"
+                                              key={cat.katID}
+                                          >
+                                              <Link
+                                                  className={`hover:text-blue-800 ${
+                                                      categoryData[
+                                                          categoryActive
+                                                      ].katNama == cat.katNama
+                                                          ? "text-blue-800"
+                                                          : ""
+                                                  }`}
+                                                  to={`/category/${cat.katNama
+                                                      .replace(/\s+/g, "-")
+                                                      .toLowerCase()}`}
+                                                  key={index}
+                                                  onMouseEnter={(evt) =>
+                                                      onCategoryHover(index)
+                                                  }
+                                                  onClick={() =>
+                                                      setCategorySelected(
+                                                          (
+                                                              "000000" +
+                                                              cat.katID
+                                                          ).slice(-6)
+                                                      )
+                                                  }
+                                              >
+                                                  {cat.katNama}
+                                              </Link>
+                                          </li>
+                                      ))
+                                    : ""}
                             </ul>
                         </div>
                         <div className="md:w-3/4 w-2/3 h-full max-h-72 mx-4 overflow-auto scrollbar">
                             <ul className="flex flex-wrap flex-row font-semibold text-blue-950 pt-1">
-                                {category.categorys[
-                                    categoryActive
-                                ].category_details.map((dtl, index) => (
-                                    <a
-                                        className="whitespace-nowrap lg:w-1/4 sm:w-1/2 w-full "
-                                        href={`/category/${category.categorys[categoryActive].category_name}/${dtl.detail}`}
-                                        key={index}
-                                    >
-                                        <li
-                                            className="whitespace-nowrap lg:w-1/4 sm:w-1/2 w-full flex flex-col cursor-pointer text-sm pb-2 hover:text-blue-900"
-                                            onMouseEnter={(ev) =>
-                                                onMouseEnterCategoryDtl(
-                                                    dtl.detail
-                                                )
-                                            }
-                                            onMouseLeave={() =>
-                                                onMouseLeaveCategoryDtl()
-                                            }
-                                            key={dtl.detail}
-                                        >
-                                            {dtl.detail}
+                                {categoryData[categoryActive]
+                                    ? categoryData[categoryActive].submenu.map(
+                                          (dtl, index) => (
+                                              <li
+                                                  className="whitespace-nowrap lg:w-1/4 sm:w-1/2 w-full flex flex-col cursor-pointer text-sm pb-2 hover:text-blue-900"
+                                                  onMouseEnter={(ev) =>
+                                                      onMouseEnterCategoryDtl(
+                                                          dtl.katNama
+                                                      )
+                                                  }
+                                                  onMouseLeave={() =>
+                                                      onMouseLeaveCategoryDtl()
+                                                  }
+                                                  key={dtl.katNama}
+                                              >
+                                                  <Link
+                                                      className="whitespace-nowrap lg:w-1/4 sm:w-1/2 w-full "
+                                                      to={`/category/${categoryData[
+                                                          categoryActive
+                                                      ].katNama
+                                                          .replace(/\s+/g, "-")
+                                                          .toLowerCase()}/${dtl.katNama
+                                                          .replace(/\s+/g, "-")
+                                                          .toLowerCase()}`}
+                                                      key={index}
+                                                      onClick={() =>
+                                                          setCategorySelected(
+                                                              (
+                                                                  "000000" +
+                                                                  dtl.katID
+                                                              ).slice(-6)
+                                                          )
+                                                      }
+                                                  >
+                                                      {dtl.katNama}
+                                                  </Link>
 
-                                            {dtl.subCategory.length ? (
-                                                <ul
-                                                    className={`${
-                                                        activeCategoryDetailName ==
-                                                        dtl.detail
-                                                            ? "flex"
-                                                            : "hidden"
-                                                    } flex-wrap flex-col font-semibold text-blue-950 pt-1`}
-                                                >
-                                                    {dtl.subCategory.map(
-                                                        (sub) => (
-                                                            <a
-                                                                className="whitespace-nowrap lg:w-1/4 sm:w-1/2 w-full"
-                                                                href={`/category/${category.categorys[categoryActive].category_name}/${dtl.detail}/${sub.subCategoryName}`}
-                                                            >
-                                                                <li
-                                                                    className="whitespace-nowrap lg:w-1/4 sm:w-1/2 w-full flex items-center cursor-pointer text-sm pb-2 pl-4 hover:text-blue-900"
-                                                                    key={
-                                                                        sub.subCategoryName
-                                                                    }
-                                                                >
-                                                                    {
-                                                                        sub.subCategoryName
-                                                                    }
-                                                                </li>
-                                                            </a>
-                                                        )
-                                                    )}
-                                                </ul>
-                                            ) : (
-                                                ""
-                                            )}
-                                        </li>
-                                    </a>
-                                ))}
+                                                  {dtl.submenuDtl.length ? (
+                                                      <ul
+                                                          className={`${
+                                                              activeCategoryDetailName ==
+                                                              dtl.katNama
+                                                                  ? "flex"
+                                                                  : "hidden"
+                                                          } flex-wrap flex-col font-semibold text-blue-950 pt-1`}
+                                                      >
+                                                          {dtl.submenuDtl.map(
+                                                              (sub) => (
+                                                                  <Link
+                                                                      className="whitespace-nowrap lg:w-1/4 sm:w-1/2 w-full"
+                                                                      to={`/category/${categoryData[
+                                                                          categoryActive
+                                                                      ].katNama
+                                                                          .replace(
+                                                                              /\s+/g,
+                                                                              "-"
+                                                                          )
+                                                                          .toLowerCase()}/${dtl.katNama
+                                                                          .replace(
+                                                                              /\s+/g,
+                                                                              "-"
+                                                                          )
+                                                                          .toLowerCase()}/${sub.katNama
+                                                                          .replace(
+                                                                              /\s+/g,
+                                                                              "-"
+                                                                          )
+                                                                          .toLowerCase()}`}
+                                                                      key={
+                                                                          sub.katID
+                                                                      }
+                                                                      onClick={() =>
+                                                                          setCategorySelected(
+                                                                              (
+                                                                                  "000000" +
+                                                                                  sub.katID
+                                                                              ).slice(
+                                                                                  -6
+                                                                              )
+                                                                          )
+                                                                      }
+                                                                  >
+                                                                      <li
+                                                                          className="whitespace-nowrap w-full flex items-center cursor-pointer text-sm pb-2 pl-4 hover:text-blue-900"
+                                                                          key={
+                                                                              sub.katNama
+                                                                          }
+                                                                      >
+                                                                          {
+                                                                              sub.katNama
+                                                                          }
+                                                                      </li>
+                                                                  </Link>
+                                                              )
+                                                          )}
+                                                      </ul>
+                                                  ) : (
+                                                      ""
+                                                  )}
+                                              </li>
+                                          )
+                                      )
+                                    : ""}
                             </ul>
                         </div>
                     </div>

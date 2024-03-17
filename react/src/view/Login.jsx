@@ -3,30 +3,65 @@ import { useStateContext } from "../contexts/ContextProvider";
 import { Navigate } from "react-router-dom";
 import logo from "../assets/img/kanisius.png";
 import axiosClient from "../axios";
+import { AiOutlineCloseCircle } from "react-icons/ai";
+import { CgSpinner } from "react-icons/cg";
+
+const ButtonLogin = ({ loading }) => {
+    if (loading) {
+        return (
+            <button
+                type="submit"
+                className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                disabled
+            >
+                <div className="w-full flex justify-center">
+                    <CgSpinner className="animate-spin rounded-full h-5 w-5 mr-3" />
+                </div>
+            </button>
+        );
+    } else {
+        return (
+            <button
+                type="submit"
+                className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            >
+                <p>Masuk</p>
+            </button>
+        );
+    }
+};
 
 export default function Login() {
     const { userToken, setCurrentUser, setUserToken } = useStateContext();
     const [custEmail, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState({ __html: "" });
+    const [loading, setLoading] = useState(false);
 
     if (userToken) {
         return <Navigate to="/" />;
     }
 
-    const onLoginSubmit = (ev) => {
+    const onLoginSubmit = async (ev) => {
+        setLoading(true);
         ev.preventDefault();
         setError({ __html: "" });
 
-        axiosClient
+        await axiosClient
             .post("/login", {
                 custEmail,
                 password,
             })
             .then(({ data }) => {
-                setCurrentUser(data.user);
-                setUserToken(data.token);
-                returnToHome();
+                // console.log(data);
+                if (data.error) {
+                    setError({ __html: data.error });
+                } else {
+                    setCurrentUser(data.user);
+                    setUserToken(data.token);
+                    setError({ __html: "" });
+                    // returnToHome();
+                }
             })
             .catch((error) => {
                 if (error.response) {
@@ -37,6 +72,7 @@ export default function Login() {
                 }
                 console.error(error);
             });
+        setLoading(false);
     };
 
     const returnToHome = () => {
@@ -45,12 +81,6 @@ export default function Login() {
 
     return (
         <>
-            {error.__html && (
-                <div
-                    className="bg-red-500 rounded py-2 px-3 text-white"
-                    dangerouslySetInnerHTML={error}
-                ></div>
-            )}
             <div className="w-full max-w-7xl mx-auto px-8">
                 <div className="flex items-center justify-center mt-10">
                     <a href="/">
@@ -60,6 +90,20 @@ export default function Login() {
                 <h1 className="mt-4 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
                     Masuk untuk berbelanja
                 </h1>
+                {error.__html && (
+                    <div className="relative w-full">
+                        <div
+                            className=" bg-red-500 rounded py-2 px-3 text-white text-center mt-4"
+                            dangerouslySetInnerHTML={error}
+                        ></div>
+                        <div
+                            className="absolute right-2 top-1 text-white cursor-pointer"
+                            onClick={() => setError({ __html: "" })}
+                        >
+                            <AiOutlineCloseCircle className="h-5 w-5" />
+                        </div>
+                    </div>
+                )}
                 <p></p>
                 <div className="mt-6 sm:mx-auto sm:w-full sm:max-w-sm">
                     <form
@@ -115,12 +159,12 @@ export default function Login() {
                         </div>
 
                         <div>
-                            <button
+                            {/* <button
                                 type="submit"
-                                className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                            >
-                                Masuk
-                            </button>
+                                className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" 
+                             >*/}
+                            <ButtonLogin loading={loading} />
+                            {/* </button> */}
                         </div>
                     </form>
                     <div className="flex items-center justify-center">

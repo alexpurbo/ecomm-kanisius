@@ -5,12 +5,16 @@ const StateContext = createContext({
     usertoken: null,
     cart: [],
     openLogin: false,
+    categoryData: [],
+    categorySelected: null,
     setCurrentUser: () => {},
     setUserToken: () => {},
     setCart: () => {},
     setOpenLogin: () => {},
     openCartModal: false,
     setOpenCartModal: () => {},
+    setCategoryData: () => {},
+    setCategorySelected: () => {},
 });
 
 const tmpCategory = [
@@ -309,6 +313,8 @@ export const ContextProvider = ({ children }) => {
     const [total, setTotal] = useState(0);
     const [openLogin, setOpenLogin] = useState(false);
     const [openCartModal, setOpenCartModal] = useState(false);
+    const [categoryData, setCategoryData] = useState([]);
+    const [categorySelected, _setCategorySelected] = useState();
 
     const setUserToken = (token) => {
         if (token) {
@@ -317,6 +323,15 @@ export const ContextProvider = ({ children }) => {
             localStorage.removeItem("TOKEN");
         }
         _setUserToken(token);
+    };
+
+    const setCategorySelected = (categoryId) => {
+        if (categoryId) {
+            sessionStorage.setItem("CatSelected", categoryId);
+        } else {
+            sessionStorage.removeItem("CatSelected");
+        }
+        _setCategorySelected(categoryId);
     };
 
     return (
@@ -335,6 +350,10 @@ export const ContextProvider = ({ children }) => {
                 setItemAmount,
                 openCartModal,
                 setOpenCartModal,
+                categoryData,
+                setCategoryData,
+                categorySelected,
+                setCategorySelected,
             }}
         >
             {children}

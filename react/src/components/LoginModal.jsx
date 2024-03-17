@@ -4,13 +4,35 @@ import { useStateContext } from "../contexts/ContextProvider";
 import { Navigate } from "react-router-dom";
 import axiosClient from "../axios";
 import { CgSpinner } from "react-icons/cg";
+import { AiOutlineCloseCircle } from "react-icons/ai";
+
+const ButtonLogin = ({ loading }) => {
+    if (loading) {
+        return (
+            <button
+                className="w-full py-1.5 rounded-md shadow-md font-semibold text-white bg-blue-950"
+                disabled
+            >
+                <div className="w-full flex justify-center">
+                    <CgSpinner className="animate-spin rounded-full h-5 w-5 mr-3" />
+                </div>
+            </button>
+        );
+    } else {
+        return (
+            <button className="w-full py-1.5 rounded-md shadow-md font-semibold text-white bg-blue-950">
+                <p>Masuk</p>
+            </button>
+        );
+    }
+};
 
 export default function LoginModal() {
-    // const [openLogin, setOpenLogin] = useState(false);
     const [custEmail, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState({ __html: "" });
-    const [loginLoading, setLoginLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
+    // const [loginLoading, setLoginLoading] = useState(true);
     const {
         openLogin,
         setOpenLogin,
@@ -25,21 +47,26 @@ export default function LoginModal() {
         return <Navigate to="/" />;
     }
 
-    const onLoginSubmit = (ev) => {
-        // setLoginLoading(true);
+    const onLoginSubmit = async (ev) => {
+        setLoading(true);
+        // console.log(loginLoading);
         ev.preventDefault();
         setError({ __html: "" });
-        axiosClient
+        await axiosClient
             .post("/login", {
                 custEmail,
                 password,
             })
             .then(({ data }) => {
-                setCurrentUser(data.user);
-                setUserToken(data.token);
-                getCartData();
-                getCartAmount();
-                setOpenLogin(false);
+                if (data.error) {
+                    setError({ __html: data.error });
+                } else {
+                    setCurrentUser(data.user);
+                    setUserToken(data.token);
+                    getCartData();
+                    getCartAmount();
+                    setOpenLogin(false);
+                }
                 // returnToHome();
             })
             .catch((error) => {
@@ -51,12 +78,12 @@ export default function LoginModal() {
                 }
                 console.error(error);
             });
-        // setLoginLoading(false);
+        setLoading(false);
     };
 
     const getCartData = () => {
         axiosClient.get("/cart").then(({ data }) => {
-            console.log(data);
+            // console.log(data);
             setCart(data.data);
         });
     };
@@ -91,17 +118,20 @@ export default function LoginModal() {
                 </div>
 
                 <div className="w-full px-8 py-6">
-                    {/* {pesan ? (
-                        <div className="w-full rounded-lg bg-red-400 mb-2">
-                            <div className="px-3 py-2">
-                                <p className="font-medium text-red-800">
-                                    Pesan Notifikasi atau pesan lain
-                                </p>
+                    {error.__html && (
+                        <div className="relative w-full">
+                            <div
+                                className=" bg-red-500 rounded py-2 px-3 text-white text-center mt-4"
+                                dangerouslySetInnerHTML={error}
+                            ></div>
+                            <div
+                                className="absolute right-2 top-1 text-white cursor-pointer"
+                                onClick={() => setError({ __html: "" })}
+                            >
+                                <AiOutlineCloseCircle className="h-5 w-5" />
                             </div>
                         </div>
-                    ) : (
-                        ""
-                    )} */}
+                    )}
                     <h1 className="mb-4 text-2xl font-bold text-center">
                         Masuk
                     </h1>
@@ -132,19 +162,15 @@ export default function LoginModal() {
                             Lupa kata sandi ?
                         </p>
                         <div className="flex items-center justify-center">
-                            <button
-                                className="w-full py-1.5 rounded-md shadow-md font-semibold text-white bg-blue-950"
-                                {...(loginLoading ? "disabled" : "")}
-                                onClick={() => setLoginLoading(true)}
-                            >
-                                {loginLoading ? (
-                                    <div className="w-full flex justify-center">
-                                        <CgSpinner className="animate-spin rounded-full h-5 w-5 mr-3" />
-                                    </div>
-                                ) : (
-                                    "Masuk"
-                                )}
-                            </button>
+                            {/* <button className="w-full py-1.5 rounded-md shadow-md font-semibold text-white bg-blue-950"> */}
+                            <ButtonLogin loading={loading} />
+                            {/* Masuk */}
+                            {/* <div className="w-full flex justify-center">
+                                    
+                                    <CgSpinner className="animate-spin rounded-full h-5 w-5 mr-3" />
+                                    
+                                </div> */}
+                            {/* </button> */}
                         </div>
                     </form>
                     <p className="text-center font-thin text-slate-500 mt-2 text-sm">

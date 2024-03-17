@@ -6,6 +6,7 @@ import Breadcrumbs from "../components/Breadcrumbs";
 import ProductList from "../components/ProductList";
 import ProductDetailData from "../components/ProductDetailData";
 import { useParams } from "react-router-dom";
+import PageComponent from "../components/PageComponent";
 
 export default function ProductDetail() {
     const [kelKategori, setKelKategori] = useState([]);
@@ -46,12 +47,17 @@ export default function ProductDetail() {
     // console.log(product);
     return (
         <div>
-            <Header />
-            <Breadcrumbs />
-            <ProductDetailData id={id} />
-            <ProductList title="Produk Baru" dataProducts={newProducts} />
-            <ProductList title="Produk Pilihan" dataProducts={newProducts} />
-            <Footer />
+            <PageComponent>
+                {/* <Header /> */}
+                <Breadcrumbs />
+                <ProductDetailData id={id} />
+                <ProductList title="Produk Baru" dataProducts={newProducts} />
+                <ProductList
+                    title="Produk Pilihan"
+                    dataProducts={newProducts}
+                />
+                {/* <Footer /> */}
+            </PageComponent>
         </div>
     );
 }
