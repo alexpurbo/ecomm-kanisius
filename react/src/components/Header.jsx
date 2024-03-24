@@ -18,6 +18,7 @@ import axiosClient from "../axios";
 import LoginModal from "./LoginModal";
 import CartModal from "./CartModal";
 import { Link } from "react-router-dom";
+import { CiSearch } from "react-icons/ci";
 
 export default function Header() {
     const [openSidebar, setOpenSidebar] = useState(false);
@@ -34,6 +35,7 @@ export default function Header() {
     // const [openLogin, setOpenLogin] = useState(false);
     const [cartData, setCartData] = useState([]);
     const [cartAmount, setCartAmount] = useState();
+    const [titleSearch, setTitleSearch] = useState([]);
 
     const {
         userToken,
@@ -56,6 +58,7 @@ export default function Header() {
     const [password, setPassword] = useState("");
     const [error, setError] = useState({ __html: "" });
     const [openProfileList, setOpenProfileList] = useState(false);
+    const [keyword, setKeyword] = useState();
 
     const onCategoryHover = (id) => {
         setCategoryActive(id);
@@ -112,6 +115,19 @@ export default function Header() {
                 setItemAmount(data[0].cart_amount);
             }
         });
+    };
+
+    const onSearchChange = async (key) => {
+        setKeyword(key);
+        if (key.length > 2) {
+            // console.log("search function, go..");
+            axiosClient.get(`/productSearchByKeyword/${key}`).then((data) => {
+                console.log(data);
+                setTitleSearch(data);
+            });
+        } else {
+            setTitleSearch("");
+        }
     };
 
     const logout = (ev) => {
@@ -178,15 +194,47 @@ export default function Header() {
                                         )}
                                     </div>
                                 </div>
-                                <div className="flex justify-center items-center border border-blue-950 rounded-lg w-full max-w-lg">
+                                <div className="relative flex justify-center items-center border border-blue-950 rounded-lg w-full max-w-lg">
                                     <input
                                         type="text"
                                         className="w-full max-w-lg rounded-lg py-2 px-4 text-center focus:outline-none text-blue-950 font-semibold bg-white placeholder-blue-950"
-                                        placeholder="Search here"
+                                        placeholder="Cari di Toko Kanisius"
+                                        onChange={(ev) =>
+                                            onSearchChange(ev.target.value)
+                                        }
                                     />
-                                    <div className="group px-4 py-2 h-full text-xl hover:shadow-md cursor-pointer mr-1 my-1  rounded-lg hover:bg-blue-950 transition duration-300 ease-in-out ">
-                                        <MagnifyingGlassIcon className="group-hover:text-white text-blue-950 h-5 w-5 font-bold" />
-                                    </div>
+                                    <a href={`/search/${keyword}`}>
+                                        <div className="group px-4 py-2 h-full text-xl hover:shadow-md cursor-pointer mr-1 my-1  rounded-lg hover:bg-blue-950 transition duration-300 ease-in-out ">
+                                            <MagnifyingGlassIcon className="group-hover:text-white text-blue-950 h-5 w-5 font-bold" />
+                                        </div>
+                                    </a>
+                                    {titleSearch.data ? (
+                                        <div className="absolute w-full bg-white top-14 z-[60] shadow-md rounded-b-lg">
+                                            <ul className="py-2 px-6 font-medium mb-4">
+                                                {titleSearch.data
+                                                    ? titleSearch.data.map(
+                                                          (title, index) => (
+                                                              <a
+                                                                  href={`/search/${title.ProdDesc3}`}
+                                                                  key={index}
+                                                              >
+                                                                  <li className="py-1 flex flex-row mb-1 hover:bg-slate-300 rounded-md">
+                                                                      {/* <CiSearch className="text-xl font-bold text-slate-700" /> */}
+                                                                      <span className="ml-2">
+                                                                          {
+                                                                              title.ProdDesc3
+                                                                          }
+                                                                      </span>
+                                                                  </li>
+                                                              </a>
+                                                          )
+                                                      )
+                                                    : ""}
+                                            </ul>
+                                        </div>
+                                    ) : (
+                                        ""
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -428,7 +476,7 @@ export default function Header() {
                                               className="font-semibold text-blue-950 text-base mb-4"
                                               key={cat.katID}
                                           >
-                                              <Link
+                                              <a
                                                   className={`hover:text-blue-800 ${
                                                       categoryData[
                                                           categoryActive
@@ -436,7 +484,7 @@ export default function Header() {
                                                           ? "text-blue-800"
                                                           : ""
                                                   }`}
-                                                  to={`/category/${cat.katNama
+                                                  href={`/category/${cat.katNama
                                                       .replace(/\s+/g, "-")
                                                       .toLowerCase()}`}
                                                   key={index}
@@ -453,7 +501,7 @@ export default function Header() {
                                                   }
                                               >
                                                   {cat.katNama}
-                                              </Link>
+                                              </a>
                                           </li>
                                       ))
                                     : ""}
@@ -476,9 +524,9 @@ export default function Header() {
                                                   }
                                                   key={dtl.katNama}
                                               >
-                                                  <Link
+                                                  <a
                                                       className="whitespace-nowrap lg:w-1/4 sm:w-1/2 w-full "
-                                                      to={`/category/${categoryData[
+                                                      href={`/category/${categoryData[
                                                           categoryActive
                                                       ].katNama
                                                           .replace(/\s+/g, "-")
@@ -496,7 +544,7 @@ export default function Header() {
                                                       }
                                                   >
                                                       {dtl.katNama}
-                                                  </Link>
+                                                  </a>
 
                                                   {dtl.submenuDtl.length ? (
                                                       <ul
@@ -509,9 +557,9 @@ export default function Header() {
                                                       >
                                                           {dtl.submenuDtl.map(
                                                               (sub) => (
-                                                                  <Link
+                                                                  <a
                                                                       className="whitespace-nowrap lg:w-1/4 sm:w-1/2 w-full"
-                                                                      to={`/category/${categoryData[
+                                                                      href={`/category/${categoryData[
                                                                           categoryActive
                                                                       ].katNama
                                                                           .replace(
@@ -553,7 +601,7 @@ export default function Header() {
                                                                               sub.katNama
                                                                           }
                                                                       </li>
-                                                                  </Link>
+                                                                  </a>
                                                               )
                                                           )}
                                                       </ul>
@@ -574,7 +622,7 @@ export default function Header() {
             {/* Account Thumbnail */}
             <div
                 className={`${
-                    openSidebar ? "md:top-28 top-[78px]" : "-top-32"
+                    openSidebar ? "md:top-28 top-[78px]" : "-top-52"
                 } fixed w-full max-w-72 md:max-w-36 border border-1 shadow-lg bg-white right-4 z-40 transition-all ease-in-out duration-300 rounded-sm`}
             >
                 <div

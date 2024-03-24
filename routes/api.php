@@ -31,6 +31,9 @@ Route::get('new-products', [ProductController::class, 'getNewProducts']);
 route::get('benda-rohani', [ProductController::class, 'getSpiritualProducts']);
 route::get('produk-pilihan', [ProductController::class, 'getProdukPilihan']);
 route::get('product/{id}', [ProductController::class, 'show']);
+route::get('getProductByCategory/{id}', [ProductController::class, 'getProductByCategory']);
+route::get('productSearch/{id}', [ProductController::class, 'productSearch']);
+route::get('productSearchByKeyword/{id}', [ProductController::class, 'productSearchByKeyword']);
 
 route::post('/signup', [AuthController::class, 'signup']);
 route::post('/login', [AuthController::class, 'login']);

@@ -57,10 +57,10 @@ export default function ProductListLoading() {
         <>
             <div className="w-full mb-4 flex items-center justify-center mt-8">
                 <div className="w-full max-w-[1350px] mx-2 md:mx-8 animate-pulse">
-                    <div className="h-6 bg-slate-100 rounded w-1/4 mb-1"></div>
-                    <span className="lg:h-1 h-0.5 bg-slate-100 w-full flex items-center mb-1"></span>
+                    <div className="h-6 bg-slate-200 rounded w-1/4 mb-1"></div>
+                    <span className="lg:h-1 h-0.5 bg-slate-200 w-full flex items-center mb-1"></span>
                     <div className="w-full flex items-end justify-end">
-                        <div className="h-3 bg-slate-100 rounded w-1/6 mb-1"></div>
+                        <div className="h-3 bg-slate-200 rounded w-1/6 mb-1"></div>
                     </div>
                 </div>
             </div>
@@ -70,12 +70,12 @@ export default function ProductListLoading() {
                         <div className="px-2">
                             <div className="relative h-[310px] xs:h-[275px] sm:h-[310px] md:h-[295px] lg:h-[330px] w-full border border-slate-200 rounded-lg shadow-md cursor-pointer bg-white">
                                 <div className="w-full p-2">
-                                    <div className="rounded-md lg:h-[207px] md:h-[182px] sm:h-[192px] xs:h-[164px] h-[192px] bg-slate-100"></div>
+                                    <div className="rounded-md lg:h-[207px] md:h-[182px] sm:h-[192px] xs:h-[164px] h-[192px] bg-slate-200"></div>
                                     <div className="pt-2">
-                                        <div className="h-2 bg-slate-100 rounded w-full mb-1"></div>
-                                        <div className="h-2 bg-slate-100 rounded w-full mb-1"></div>
-                                        <div className="h-2 bg-slate-100 rounded w-full mb-1"></div>
-                                        <div className="absolute right-3 bottom-2 h-2 bg-slate-100 rounded w-1/3 mb-1"></div>
+                                        <div className="h-2 bg-slate-200 rounded w-full mb-1"></div>
+                                        <div className="h-2 bg-slate-200 rounded w-full mb-1"></div>
+                                        <div className="h-2 bg-slate-200 rounded w-full mb-1"></div>
+                                        <div className="absolute right-3 bottom-2 h-2 bg-slate-200 rounded w-1/3 mb-1"></div>
                                     </div>
                                 </div>
                             </div>
@@ -83,12 +83,12 @@ export default function ProductListLoading() {
                         <div className="px-2">
                             <div className="relative h-[310px] xs:h-[275px] sm:h-[310px] md:h-[295px] lg:h-[330px] w-full border border-slate-200 rounded-lg shadow-md cursor-pointer bg-white">
                                 <div className="w-full p-2">
-                                    <div className="rounded-md lg:h-[207px] md:h-[182px] sm:h-[192px] xs:h-[164px] h-[192px] bg-slate-100"></div>
+                                    <div className="rounded-md lg:h-[207px] md:h-[182px] sm:h-[192px] xs:h-[164px] h-[192px] bg-slate-200"></div>
                                     <div className="pt-2">
-                                        <div className="h-2 bg-slate-100 rounded w-full mb-1"></div>
-                                        <div className="h-2 bg-slate-100 rounded w-full mb-1"></div>
-                                        <div className="h-2 bg-slate-100 rounded w-full mb-1"></div>
-                                        <div className="absolute right-3 bottom-2 h-2 bg-slate-100 rounded w-1/3 mb-1"></div>
+                                        <div className="h-2 bg-slate-200 rounded w-full mb-1"></div>
+                                        <div className="h-2 bg-slate-200 rounded w-full mb-1"></div>
+                                        <div className="h-2 bg-slate-200 rounded w-full mb-1"></div>
+                                        <div className="absolute right-3 bottom-2 h-2 bg-slate-200 rounded w-1/3 mb-1"></div>
                                     </div>
                                 </div>
                             </div>
@@ -96,12 +96,12 @@ export default function ProductListLoading() {
                         <div className="px-2">
                             <div className="relative h-[310px] xs:h-[275px] sm:h-[310px] md:h-[295px] lg:h-[330px] w-full border border-slate-200 rounded-lg shadow-md cursor-pointer bg-white">
                                 <div className="w-full p-2">
-                                    <div className="rounded-md lg:h-[207px] md:h-[182px] sm:h-[192px] xs:h-[164px] h-[192px] bg-slate-100"></div>
+                                    <div className="rounded-md lg:h-[207px] md:h-[182px] sm:h-[192px] xs:h-[164px] h-[192px] bg-slate-200"></div>
                                     <div className="pt-2">
-                                        <div className="h-2 bg-slate-100 rounded w-full mb-1"></div>
-                                        <div className="h-2 bg-slate-100 rounded w-full mb-1"></div>
-                                        <div className="h-2 bg-slate-100 rounded w-full mb-1"></div>
-                                        <div className="absolute right-3 bottom-2 h-2 bg-slate-100 rounded w-1/3 mb-1"></div>
+                                        <div className="h-2 bg-slate-200 rounded w-full mb-1"></div>
+                                        <div className="h-2 bg-slate-200 rounded w-full mb-1"></div>
+                                        <div className="h-2 bg-slate-200 rounded w-full mb-1"></div>
+                                        <div className="absolute right-3 bottom-2 h-2 bg-slate-200 rounded w-1/3 mb-1"></div>
                                     </div>
                                 </div>
                             </div>
@@ -109,12 +109,12 @@ export default function ProductListLoading() {
                         <div className="px-2">
                             <div className="relative h-[310px] xs:h-[275px] sm:h-[310px] md:h-[295px] lg:h-[330px] w-full border border-slate-200 rounded-lg shadow-md cursor-pointer bg-white">
                                 <div className="w-full p-2">
-                                    <div className="rounded-md lg:h-[207px] md:h-[182px] sm:h-[192px] xs:h-[164px] h-[192px] bg-slate-100"></div>
+                                    <div className="rounded-md lg:h-[207px] md:h-[182px] sm:h-[192px] xs:h-[164px] h-[192px] bg-slate-200"></div>
                                     <div className="pt-2">
-                                        <div className="h-2 bg-slate-100 rounded w-full mb-1"></div>
-                                        <div className="h-2 bg-slate-100 rounded w-full mb-1"></div>
-                                        <div className="h-2 bg-slate-100 rounded w-full mb-1"></div>
-                                        <div className="absolute right-3 bottom-2 h-2 bg-slate-100 rounded w-1/3 mb-1"></div>
+                                        <div className="h-2 bg-slate-200 rounded w-full mb-1"></div>
+                                        <div className="h-2 bg-slate-200 rounded w-full mb-1"></div>
+                                        <div className="h-2 bg-slate-200 rounded w-full mb-1"></div>
+                                        <div className="absolute right-3 bottom-2 h-2 bg-slate-200 rounded w-1/3 mb-1"></div>
                                     </div>
                                 </div>
                             </div>
@@ -122,12 +122,12 @@ export default function ProductListLoading() {
                         <div className="px-2">
                             <div className="relative h-[310px] xs:h-[275px] sm:h-[310px] md:h-[295px] lg:h-[330px] w-full border border-slate-200 rounded-lg shadow-md cursor-pointer bg-white">
                                 <div className="w-full p-2">
-                                    <div className="rounded-md lg:h-[207px] md:h-[182px] sm:h-[192px] xs:h-[164px] h-[192px] bg-slate-100"></div>
+                                    <div className="rounded-md lg:h-[207px] md:h-[182px] sm:h-[192px] xs:h-[164px] h-[192px] bg-slate-200"></div>
                                     <div className="pt-2">
-                                        <div className="h-2 bg-slate-100 rounded w-full mb-1"></div>
-                                        <div className="h-2 bg-slate-100 rounded w-full mb-1"></div>
-                                        <div className="h-2 bg-slate-100 rounded w-full mb-1"></div>
-                                        <div className="absolute right-3 bottom-2 h-2 bg-slate-100 rounded w-1/3 mb-1"></div>
+                                        <div className="h-2 bg-slate-200 rounded w-full mb-1"></div>
+                                        <div className="h-2 bg-slate-200 rounded w-full mb-1"></div>
+                                        <div className="h-2 bg-slate-200 rounded w-full mb-1"></div>
+                                        <div className="absolute right-3 bottom-2 h-2 bg-slate-200 rounded w-1/3 mb-1"></div>
                                     </div>
                                 </div>
                             </div>
@@ -135,12 +135,12 @@ export default function ProductListLoading() {
                         <div className="px-2">
                             <div className="relative h-[310px] xs:h-[275px] sm:h-[310px] md:h-[295px] lg:h-[330px] w-full border border-slate-200 rounded-lg shadow-md cursor-pointer bg-white">
                                 <div className="w-full p-2">
-                                    <div className="rounded-md lg:h-[207px] md:h-[182px] sm:h-[192px] xs:h-[164px] h-[192px] bg-slate-100"></div>
+                                    <div className="rounded-md lg:h-[207px] md:h-[182px] sm:h-[192px] xs:h-[164px] h-[192px] bg-slate-200"></div>
                                     <div className="pt-2">
-                                        <div className="h-2 bg-slate-100 rounded w-full mb-1"></div>
-                                        <div className="h-2 bg-slate-100 rounded w-full mb-1"></div>
-                                        <div className="h-2 bg-slate-100 rounded w-full mb-1"></div>
-                                        <div className="absolute right-3 bottom-2 h-2 bg-slate-100 rounded w-1/3 mb-1"></div>
+                                        <div className="h-2 bg-slate-200 rounded w-full mb-1"></div>
+                                        <div className="h-2 bg-slate-200 rounded w-full mb-1"></div>
+                                        <div className="h-2 bg-slate-200 rounded w-full mb-1"></div>
+                                        <div className="absolute right-3 bottom-2 h-2 bg-slate-200 rounded w-1/3 mb-1"></div>
                                     </div>
                                 </div>
                             </div>

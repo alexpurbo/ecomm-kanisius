@@ -4,6 +4,7 @@ import ProductDetail from "./view/ProductDetail";
 import Category from "./view/Category";
 import Signup from "./view/Signup";
 import Login from "./view/Login";
+import Search from "./view/Search";
 
 const router = createBrowserRouter([
     {
@@ -25,6 +26,10 @@ const router = createBrowserRouter([
     {
         path: "/category/:category/:subcategory/:subcategorydetail",
         element: <Category />,
+    },
+    {
+        path: "/search/:keyword",
+        element: <Search />,
     },
     {
         path: "/signup",

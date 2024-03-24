@@ -9,7 +9,9 @@ class KelKategory extends Model
 {
     use HasFactory;
 
-    protected $table = 'ref_kel_kategori';
+    protected $table = 'ref_kategori';
+    protected $primaryKey = 'katID';
+    public $timestamps = false;
 
-    protected $fillable = ['katId', 'katNama'];
+    protected $fillable = ['katLevel', 'katNama'];
 }

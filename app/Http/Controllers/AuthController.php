@@ -43,8 +43,8 @@ class AuthController extends Controller
 
         if (!Auth::attempt($credentials, $remember)) {
             return response([
-                'error' => 'The Provided credentials are not correct'
-            ], 422);
+                'error' => 'Terjadi kesalahan, Pastikan email dan password sesuai!'
+            ]);
         }
         $user = Auth::user();
         $token = $user->createToken('main')->plainTextToken;

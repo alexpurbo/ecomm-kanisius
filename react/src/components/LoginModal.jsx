@@ -43,10 +43,6 @@ export default function LoginModal() {
         setItemAmount,
     } = useStateContext();
 
-    if (userToken) {
-        return <Navigate to="/" />;
-    }
-
     const onLoginSubmit = async (ev) => {
         setLoading(true);
         // console.log(loginLoading);
