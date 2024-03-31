@@ -5,6 +5,7 @@ import { Navigate } from "react-router-dom";
 import axiosClient from "../axios";
 import { CgSpinner } from "react-icons/cg";
 import { AiOutlineCloseCircle } from "react-icons/ai";
+import { IoMdEye, IoIosEyeOff } from "react-icons/io";
 
 const ButtonLogin = ({ loading }) => {
     if (loading) {
@@ -32,6 +33,7 @@ export default function LoginModal() {
     const [password, setPassword] = useState("");
     const [error, setError] = useState({ __html: "" });
     const [loading, setLoading] = useState(false);
+    const [pswdInputType, setPswdInputType] = useState("password");
     // const [loginLoading, setLoginLoading] = useState(true);
     const {
         openLogin,
@@ -41,6 +43,7 @@ export default function LoginModal() {
         userToken,
         setCart,
         setItemAmount,
+        showToast,
     } = useStateContext();
 
     const onLoginSubmit = async (ev) => {
@@ -62,6 +65,7 @@ export default function LoginModal() {
                     getCartData();
                     getCartAmount();
                     setOpenLogin(false);
+                    showToast("Berhasil Masuk");
                 }
                 // returnToHome();
             })
@@ -91,6 +95,14 @@ export default function LoginModal() {
                 setItemAmount(data[0].cart_amount);
             }
         });
+    };
+
+    const pswdInputTypeHandler = () => {
+        if (pswdInputType == "text") {
+            setPswdInputType("password");
+        } else if (pswdInputType == "password") {
+            setPswdInputType("text");
+        }
     };
 
     return (
@@ -132,28 +144,42 @@ export default function LoginModal() {
                         Masuk
                     </h1>
                     <form action="" method="post" onSubmit={onLoginSubmit}>
-                        <input
-                            id="email"
-                            name="custEmail"
-                            type="email"
-                            autoComplete="email"
-                            required
-                            value={custEmail}
-                            onChange={(ev) => setEmail(ev.target.value)}
-                            className="block w-full rounded-md py-1.5 px-3 text-gray-900 border-0 ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-blue-500 focus:outline-none mb-3"
-                            placeholder="User Id"
-                        />
-                        <input
-                            id="password"
-                            name="password"
-                            type="password"
-                            autoComplete="current-password"
-                            required
-                            value={password}
-                            onChange={(ev) => setPassword(ev.target.value)}
-                            className="block w-full rounded-md py-1.5 px-3 text-gray-900 border-0 ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-blue-500 focus:outline-none mb-1"
-                            placeholder="Password"
-                        />
+                        <div className="">
+                            <input
+                                id="email"
+                                name="custEmail"
+                                type="email"
+                                autoComplete="email"
+                                required
+                                value={custEmail}
+                                onChange={(ev) => setEmail(ev.target.value)}
+                                className="block w-full rounded-md py-1.5 px-3 text-gray-900 border-0 ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-blue-500 focus:outline-none mb-3"
+                                placeholder="User Id"
+                            />
+                        </div>
+                        <div className="relative">
+                            <input
+                                id="password"
+                                name="password"
+                                type={pswdInputType}
+                                autoComplete="current-password"
+                                required
+                                value={password}
+                                onChange={(ev) => setPassword(ev.target.value)}
+                                className="block w-full rounded-md py-1.5 px-3 text-gray-900 border-0 ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-blue-500 focus:outline-none mb-1"
+                                placeholder="Password"
+                            />
+                            <div
+                                className="absolute h-5 w-5 top-2 right-6 cursor-pointer"
+                                onClick={(ev) => pswdInputTypeHandler(ev)}
+                            >
+                                {pswdInputType == "password" ? (
+                                    <IoIosEyeOff className="text-slate-500 h-full w-full" />
+                                ) : (
+                                    <IoMdEye className="text-slate-500  h-full w-full" />
+                                )}
+                            </div>
+                        </div>
                         <p className="text-sm text-slate-500 mb-4 text-right cursor-pointer hover:text-slate-700">
                             Lupa kata sandi ?
                         </p>

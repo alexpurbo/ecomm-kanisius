@@ -14,8 +14,15 @@ export default function ProductDetailData(id) {
     const [total, setTotal] = useState();
     const [stock, setStock] = useState(0);
     const [productId, setProductId] = useState();
-    const { currentUser, userToken, openLogin, setOpenLogin, setItemAmount } =
-        useStateContext();
+    const {
+        currentUser,
+        userToken,
+        openLogin,
+        setOpenLogin,
+        setItemAmount,
+        setCart,
+        showToast,
+    } = useStateContext();
     // console.log(product);
 
     const getDataProduct = () => {
@@ -63,6 +70,8 @@ export default function ProductDetailData(id) {
                 .then(({ data }) => {
                     // console.log(data);
                     setCartAmount();
+                    getCartData();
+                    showToast("Produk berhasil ditambahkan pada keranjang");
                 })
                 .catch((error) => {
                     if (error.response) {
@@ -79,6 +88,12 @@ export default function ProductDetailData(id) {
     const setCartAmount = () => {
         axiosClient.get("/cartAmount").then(({ data }) => {
             setItemAmount(data[0].cart_amount);
+        });
+    };
+
+    const getCartData = () => {
+        axiosClient.get("/cart").then(({ data }) => {
+            setCart(data.data);
         });
     };
 

@@ -5,6 +5,7 @@ import logo from "../assets/img/kanisius.png";
 import axiosClient from "../axios";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { CgSpinner } from "react-icons/cg";
+import { IoMdEye, IoIosEyeOff } from "react-icons/io";
 
 const ButtonLogin = ({ loading }) => {
     if (loading) {
@@ -32,15 +33,25 @@ const ButtonLogin = ({ loading }) => {
 };
 
 export default function Login() {
-    const { userToken, setCurrentUser, setUserToken } = useStateContext();
+    const { userToken, setCurrentUser, setUserToken, showToast } =
+        useStateContext();
     const [custEmail, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState({ __html: "" });
     const [loading, setLoading] = useState(false);
+    const [pswdInputType, setPswdInputType] = useState("password");
 
     if (userToken) {
         return <Navigate to="/" />;
     }
+
+    const pswdInputTypeHandler = () => {
+        if (pswdInputType == "text") {
+            setPswdInputType("password");
+        } else if (pswdInputType == "password") {
+            setPswdInputType("text");
+        }
+    };
 
     const onLoginSubmit = async (ev) => {
         setLoading(true);
@@ -60,6 +71,7 @@ export default function Login() {
                     setCurrentUser(data.user);
                     setUserToken(data.token);
                     setError({ __html: "" });
+                    showToast("Berhasil Masuk");
                     // returnToHome();
                 }
             })
@@ -128,7 +140,7 @@ export default function Login() {
                                     required
                                     value={custEmail}
                                     onChange={(ev) => setEmail(ev.target.value)}
-                                    className="block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    className="block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 font-medium"
                                 />
                             </div>
                         </div>
@@ -142,19 +154,29 @@ export default function Login() {
                                     Password
                                 </label>
                             </div>
-                            <div className="mt-2">
+                            <div className="relative mt-2">
                                 <input
                                     id="password"
                                     name="password"
-                                    type="password"
+                                    type={pswdInputType}
                                     autoComplete="current-password"
                                     required
                                     value={password}
                                     onChange={(ev) =>
                                         setPassword(ev.target.value)
                                     }
-                                    className="block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    className="block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 font-medium"
                                 />
+                                <div
+                                    className="absolute h-4 w-4 top-2 right-6 cursor-pointer"
+                                    onClick={(ev) => pswdInputTypeHandler(ev)}
+                                >
+                                    {pswdInputType == "password" ? (
+                                        <IoIosEyeOff className="text-slate-500 " />
+                                    ) : (
+                                        <IoMdEye className="text-slate-500 " />
+                                    )}
+                                </div>
                             </div>
                         </div>
 

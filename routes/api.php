@@ -23,6 +23,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
     Route::apiResource('/cart', CartController::class);
     Route::get('/cartAmount', [CartController::class, 'cartAmount']);
+    Route::delete('/cart/destroyAll/{id}', [CartController::class, 'destroyAll']);
 });
 
 Route::apiResource('kel-kategori', KelKategoryController::class);

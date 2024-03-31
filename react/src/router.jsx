@@ -5,11 +5,31 @@ import Category from "./view/Category";
 import Signup from "./view/Signup";
 import Login from "./view/Login";
 import Search from "./view/Search";
+import CaraBelanja from "./view/CaraBelanja";
+import Katalog from "./view/Katalog";
+import Promo from "./view/Promo";
+import Cart from "./view/Cart";
 
 const router = createBrowserRouter([
     {
         path: "/",
         element: <Home />,
+    },
+    {
+        path: "/promo",
+        element: <Promo />,
+    },
+    {
+        path: "/katalog",
+        element: <Katalog />,
+    },
+    {
+        path: "/cara-belanja",
+        element: <CaraBelanja />,
+    },
+    {
+        path: "/cart",
+        element: <Cart />,
     },
     {
         path: "/product-detail/:id",

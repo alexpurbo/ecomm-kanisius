@@ -24,7 +24,7 @@ class CartController extends Controller
         //     ->groupBy('cart_product')
         //     ->get();
 
-        $data = DB::select("SELECT cart_id, cart_customer, cart_product, cart_amount, cart_price, prodDesc3 FROM tb_cart LEFT JOIN ref_prod_invtf ON cart_product = prodId WHERE cart_customer = '" . $user->C_ID . "'");
+        $data = DB::select("SELECT cart_id, cart_customer, cart_product, cart_amount, cart_price, prodDesc3, prodBerat FROM tb_cart LEFT JOIN ref_prod_invtf ON cart_product = prodId WHERE cart_customer = '" . $user->C_ID . "'");
 
         return response()->json(['data' => $data], 200);
     }
@@ -107,7 +107,17 @@ class CartController extends Controller
      */
     public function update(Request $request, Cart $cart)
     {
-        //
+        // $cart = Cart::firstOrNew(['cart_customer' =>  $request->customer, 'cart_product' =>  $request->product, 'cart_price' =>  $request->price]);
+        // $cart->cart_amount = $request->amount;
+        // $cart->cart_product = $request->product;
+        // $cart->cart_customer = $request->customer;
+        // $cart->cart_price =  $request->price;
+
+        // $data = $cart->save();
+        $data = $request->toArray();
+        $hasil = $cart->update($data);
+
+        return response(['data' => $hasil]);
     }
 
     /**
@@ -116,8 +126,33 @@ class CartController extends Controller
      * @param  \App\Models\Cart  $cart
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Cart $cart)
+    public function destroy(Request $request, Cart $cart)
     {
-        //
+        $user = $request->user();
+        if ($user->C_ID !== $cart->cart_customer) {
+            return abort(403, 'Unauthorized action.');
+        }
+
+        $hasil = $cart->delete();
+
+        return $hasil;
+    }
+
+    public function destroyAll(Request $request, $id)
+    {
+        // $user = $request->user();
+        // // return [
+        // //     'cid' => $user->C_ID,
+        // //     'id' => $id
+        // // ];
+        // if ($user->C_ID !== $id) {
+        //     // return abort(403, 'Unauthorized action.');
+        //     return 'gagal';
+        // }
+
+        // return 'sukses';
+
+        $delete = DB::table('tb_cart')->where('cart_customer', $id)->delete();
+        return $delete;
     }
 }

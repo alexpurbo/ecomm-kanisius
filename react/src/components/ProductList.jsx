@@ -20,8 +20,15 @@ export default function ProductList({ title, dataProducts }) {
     // const [products, setProducts] = useState(dataProducts);
     const [screenSize, setScreenSize] = useState(window.innerWidth);
     const products = dataProducts;
-    const { currentUser, userToken, openLogin, setOpenLogin, setItemAmount } =
-        useStateContext();
+    const {
+        currentUser,
+        userToken,
+        openLogin,
+        setOpenLogin,
+        setItemAmount,
+        setCart,
+        showToast,
+    } = useStateContext();
 
     // console.log(products);
 
@@ -37,6 +44,8 @@ export default function ProductList({ title, dataProducts }) {
                 .then(({ data }) => {
                     // console.log(data);
                     setCartAmount();
+                    getCartData();
+                    showToast("Produk berhasil ditambahkan pada keranjang");
                 })
                 .catch((error) => {
                     if (error.response) {
@@ -53,6 +62,12 @@ export default function ProductList({ title, dataProducts }) {
     const setCartAmount = () => {
         axiosClient.get("/cartAmount").then(({ data }) => {
             setItemAmount(data[0].cart_amount);
+        });
+    };
+
+    const getCartData = () => {
+        axiosClient.get("/cart").then(({ data }) => {
+            setCart(data.data);
         });
     };
 
@@ -167,7 +182,7 @@ export default function ProductList({ title, dataProducts }) {
                                                     </div>
                                                 </a>
                                                 <div
-                                                    className="absolute hidden group-hover:block group-hover:-translate-x-9 bottom-[118px] bg-blue-950/70 hover:bg-blue-950 rounded-full h-7 w-7 -right-6 transition duration-700 ease-in-out cursor-pointer"
+                                                    className="absolute md:hidden block group-hover:block md:group-hover:-translate-x-9 bottom-[118px] bg-blue-950/70 hover:bg-blue-950 rounded-full h-7 w-7 md:-right-6 right-2 transition duration-700 ease-in-out cursor-pointer"
                                                     onClick={() =>
                                                         onClick(prod)
                                                     }

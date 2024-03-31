@@ -6,7 +6,6 @@ import {
     XMarkIcon,
     Bars3Icon,
     XCircleIcon,
-    ArrowLeftEndOnRectangleIcon,
     UserIcon,
     ArrowRightStartOnRectangleIcon,
 } from "@heroicons/react/24/solid";
@@ -17,8 +16,8 @@ import { useStateContext } from "../contexts/ContextProvider";
 import axiosClient from "../axios";
 import LoginModal from "./LoginModal";
 import CartModal from "./CartModal";
-import { Link } from "react-router-dom";
-import { CiSearch } from "react-icons/ci";
+import { Link, Navigate, useNavigate } from "react-router-dom";
+import LogoutModal from "./LogoutModal";
 
 export default function Header() {
     const [openSidebar, setOpenSidebar] = useState(false);
@@ -53,12 +52,15 @@ export default function Header() {
         categoryData,
         setCategoryData,
         setCategorySelected,
+        setOpenLogoutModal,
     } = useStateContext();
     const [custEmail, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState({ __html: "" });
     const [openProfileList, setOpenProfileList] = useState(false);
     const [keyword, setKeyword] = useState();
+    const navigate = useNavigate();
+    const [urlPathname, setUrlPathname] = useState();
 
     const onCategoryHover = (id) => {
         setCategoryActive(id);
@@ -77,7 +79,9 @@ export default function Header() {
     };
 
     useEffect(() => {
-        // console.log(category);
+        // console.log(window.location.pathname);
+        setUrlPathname(window.location.pathname);
+        // this.context.router.route.location.pathname === this.props.to
         setCategoryDetails(category.categorys[0]);
         if (userToken) {
             getUserData();
@@ -122,7 +126,7 @@ export default function Header() {
         if (key.length > 2) {
             // console.log("search function, go..");
             axiosClient.get(`/productSearchByKeyword/${key}`).then((data) => {
-                console.log(data);
+                // console.log(data);
                 setTitleSearch(data);
             });
         } else {
@@ -130,16 +134,29 @@ export default function Header() {
         }
     };
 
+    const searchHandle = (event) => {
+        // console.log(event);
+        if (event.key === "Enter") {
+            if (keyword.length > 2) {
+                window.location.href = "/search/" + keyword;
+            }
+        } else if (event.type == "click") {
+            window.location.href = "/search/" + keyword;
+        }
+    };
+
     const logout = (ev) => {
         ev.preventDefault();
-        axiosClient.post("/logout").then((res) => {
-            setCurrentUser({});
-            setUserToken(null);
-            setOpenProfileList(false);
-            setOpenSidebar(false);
-            setItemAmount(0);
-            setCart([]);
-        });
+        // axiosClient.post("/logout").then((res) => {
+        setOpenProfileList(false);
+        setOpenSidebar(false);
+        setOpenLogoutModal(true);
+
+        //     setCurrentUser({});
+        //     setUserToken(null);
+        //     setItemAmount(0);
+        //     setCart([]);
+        // });
     };
 
     return (
@@ -197,17 +214,26 @@ export default function Header() {
                                 <div className="relative flex justify-center items-center border border-blue-950 rounded-lg w-full max-w-lg">
                                     <input
                                         type="text"
-                                        className="w-full max-w-lg rounded-lg py-2 px-4 text-center focus:outline-none text-blue-950 font-semibold bg-white placeholder-blue-950"
+                                        className="w-full max-w-lg rounded-lg py-2 px-4 text-center focus:outline-none text-blue-950 font-semibold bg-white placeholder-blue-950 placeholder-opacity-55 focus:placeholder-opacity-0"
                                         placeholder="Cari di Toko Kanisius"
                                         onChange={(ev) =>
                                             onSearchChange(ev.target.value)
                                         }
+                                        onKeyDown={(ev) => searchHandle(ev)}
                                     />
-                                    <a href={`/search/${keyword}`}>
-                                        <div className="group px-4 py-2 h-full text-xl hover:shadow-md cursor-pointer mr-1 my-1  rounded-lg hover:bg-blue-950 transition duration-300 ease-in-out ">
+                                    <button
+                                        onClick={(ev) => searchHandle(ev)}
+                                        disabled={keyword ? false : true}
+                                        className={`${
+                                            keyword
+                                                ? "cursor-pointer"
+                                                : "cursor-not-allowed"
+                                        }`}
+                                    >
+                                        <div className="group px-4 py-2 h-full text-xl hover:shadow-md mr-1 my-1 rounded-lg hover:bg-blue-950 transition duration-300 ease-in-out ">
                                             <MagnifyingGlassIcon className="group-hover:text-white text-blue-950 h-5 w-5 font-bold" />
                                         </div>
-                                    </a>
+                                    </button>
                                     {titleSearch.data ? (
                                         <div className="absolute w-full bg-white top-14 z-[60] shadow-md rounded-b-lg">
                                             <ul className="py-2 px-6 font-medium mb-4">
@@ -242,26 +268,68 @@ export default function Header() {
                         {/* Floating Search */}
                         <div
                             className={`absolute ${
-                                openSearchBar ? "top-[118px]" : "-top-32"
+                                openSearchBar ? "top-20" : "-top-32"
                             } w-full z-10 md:right-8 flex justify-end items-center transition-all delay-300 duration-500 ease-in-out`}
                         >
-                            <div className="absolute md:w-96 bg-blue-400 rounded-xl flex justify-center items-center shadow-xl">
+                            <div className="absolute w-full bg-white border border-slate-200 rounded-xl flex justify-center items-center shadow-xl">
                                 {/* <div className="absolute -top-2 right-24 h-4 w-4 rotate-45 bg-blue-400"></div> */}
                                 <div
-                                    className="absolute -right-1 -top-2 h-5 w-5 rounded-full flex items-center justify-center bg-blue-500 hover:bg-blue-600 cursor-pointer text-slate-200 hover:text-white"
+                                    className="absolute -right-1 -top-2 h-5 w-5 rounded-full flex items-center justify-center cursor-pointer text-slate-700 hover:text-white"
                                     onClick={() => setOpenSearchBar(false)}
                                 >
                                     <XCircleIcon className="font-bold" />
                                 </div>
-                                <div className="flex border border-blue-300 rounded-lg w-full max-w-sm m-3">
+                                <div className="relative flex border border-slate-200 rounded-lg w-full m-3">
                                     <input
                                         type="text"
-                                        className="w-full max-w-sm rounded-lg py-2 px-4 text-center focus:outline-none text-white font-semibold bg-blue-400 placeholder-white"
-                                        placeholder="Search here"
+                                        className="w-full max-w-sm rounded-lg py-2 px-4 text-center focus:outline-none text-blue-950 font-semibold bg-white placeholder-blue-950 placeholder-opacity-55 focus:placeholder-opacity-0"
+                                        placeholder="Cari di toko Kanisius"
+                                        onChange={(ev) =>
+                                            onSearchChange(ev.target.value)
+                                        }
                                     />
-                                    <div className="px-4 py-2 h-full text-xl hover:shadow-md cursor-pointer mr-1 my-1  rounded-lg hover:bg-blue-300 transition duration-300 ease-in-out">
-                                        <MagnifyingGlassIcon className="text-white" />
-                                    </div>
+                                    <button
+                                        onClick={(ev) => searchHandle(ev)}
+                                        disabled={keyword ? false : true}
+                                    >
+                                        <div className="px-4 py-2 text-xl hover:shadow-md cursor-pointer mr-1 my-1 rounded-lg hover:bg-blue-300 transition duration-300 ease-in-out">
+                                            <MagnifyingGlassIcon className="text-blue-950 h-5 w-5 font-bold" />
+                                        </div>
+                                    </button>
+                                    {titleSearch.data ? (
+                                        <div className="absolute w-full bg-white top-14 z-[60] shadow-md rounded-b-lg">
+                                            <ul className="py-2 px-6 font-medium mb-4 overflow-auto">
+                                                {openSearchBar
+                                                    ? titleSearch.data
+                                                        ? titleSearch.data.map(
+                                                              (
+                                                                  title,
+                                                                  index
+                                                              ) => (
+                                                                  <a
+                                                                      href={`/search/${title.ProdDesc3}`}
+                                                                      key={
+                                                                          index
+                                                                      }
+                                                                  >
+                                                                      <li className="py-1 flex flex-row mb-1 hover:bg-slate-300 rounded-md overflow-hidden">
+                                                                          {/* <CiSearch className="text-xl font-bold text-slate-700" /> */}
+                                                                          <span className="ml-2">
+                                                                              {
+                                                                                  title.ProdDesc3
+                                                                              }
+                                                                          </span>
+                                                                      </li>
+                                                                  </a>
+                                                              )
+                                                          )
+                                                        : ""
+                                                    : ""}
+                                            </ul>
+                                        </div>
+                                    ) : (
+                                        ""
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -298,7 +366,7 @@ export default function Header() {
                                 {userToken ? (
                                     <li className="cursor-pointer">
                                         <button
-                                            className="bg-white text-blue-950 border border-blue-900 font-semibold hover:bg-slate-50 transition delay-150 ease-in-out hover:shadow-md py-2 px-4 rounded-md"
+                                            className="bg-white text-blue-950 border border-blue-900 font-semibold transition delay-150 ease-in-out hover:shadow-md py-2 px-4 rounded-md"
                                             onClick={() =>
                                                 setOpenProfileList(
                                                     (openProfileList) =>
@@ -306,7 +374,7 @@ export default function Header() {
                                                 )
                                             }
                                         >
-                                            <div className="flex flex-row items-end">
+                                            <div className="flex flex-row items-center justify-center">
                                                 <UserIcon className="h-7 w-7 text-blue-950 " />
                                                 <p className="text-blue-950 ml-2 font-medium text-sm">
                                                     {currentUser.custNama}
@@ -340,7 +408,7 @@ export default function Header() {
                                     <div className="flex flex-col px-6 py-4">
                                         <ul>
                                             <li className="font-medium mb-1 cursor-pointer text-blue-950 hover:text-blue-900">
-                                                Setelan
+                                                Pengaturan akun
                                             </li>
                                             <li className="font-medium mb-1 cursor-pointer text-blue-950 hover:text-blue-900">
                                                 Wishlist
@@ -403,15 +471,15 @@ export default function Header() {
                                         : "text-slate-100"
                                 }`}
                                 onClick={() =>
-                                    setOpenCartItem(
-                                        (openCartItem) => !openCartItem
+                                    setOpenCartModal(
+                                        (openCartModal) => !openCartModal
                                     )
                                 }
                             >
                                 <ShoppingCartIcon className="h-6 w-6 font-bold text-blue-950" />
                                 <div className="absolute h-4 w-4 rounded-full bg-red-500 -top-2 -right-2 flex items-center justify-center">
                                     <p className="p-1 text-[8px] text-white font-medium">
-                                        0
+                                        {itemAmount}
                                     </p>
                                 </div>
                             </li>
@@ -437,17 +505,41 @@ export default function Header() {
                     <nav className="hidden md:block border-t border-t-blue-950 my-2 px-4">
                         <div className="relative overflow-y-auto ">
                             <ul className="flex flex-1 item-center justify-center  overflow-y-auto space-x-4 font-semibold text-blue-950 pt-1">
-                                <li className="whitespace-nowrap flex items-center text-sm">
+                                <li
+                                    className={`${
+                                        urlPathname == "/"
+                                            ? "text-blue-600"
+                                            : ""
+                                    } whitespace-nowrap flex items-center text-sm flex-col`}
+                                >
                                     <a href="/">Home</a>
                                 </li>
-                                <li className="whitespace-nowrap flex items-center cursor-pointer text-sm">
-                                    Katalog
+                                <li
+                                    className={`${
+                                        urlPathname == "/katalog"
+                                            ? "text-blue-600"
+                                            : ""
+                                    } whitespace-nowrap flex items-center text-sm flex-col`}
+                                >
+                                    <a href="/katalog">Katalog</a>
                                 </li>
-                                <li className="whitespace-nowrap flex items-center cursor-pointer text-sm">
-                                    Promo
+                                <li
+                                    className={`${
+                                        urlPathname == "/promo"
+                                            ? "text-blue-600"
+                                            : ""
+                                    } whitespace-nowrap flex items-center text-sm flex-col`}
+                                >
+                                    <a href="/promo">Promo</a>
                                 </li>
-                                <li className="whitespace-nowrap flex items-center cursor-pointer text-sm">
-                                    Cara Belanja
+                                <li
+                                    className={`${
+                                        urlPathname == "/cara-belanja"
+                                            ? "text-blue-600"
+                                            : ""
+                                    } whitespace-nowrap flex items-center text-sm flex-col`}
+                                >
+                                    <a href="/cara-belanja">Cara Belanja</a>
                                 </li>
                             </ul>
                         </div>
@@ -622,7 +714,7 @@ export default function Header() {
             {/* Account Thumbnail */}
             <div
                 className={`${
-                    openSidebar ? "md:top-28 top-[78px]" : "-top-52"
+                    openSidebar ? "md:top-28 top-[78px]" : "-top-56"
                 } fixed w-full max-w-72 md:max-w-36 border border-1 shadow-lg bg-white right-4 z-40 transition-all ease-in-out duration-300 rounded-sm`}
             >
                 <div
@@ -642,17 +734,39 @@ export default function Header() {
                 <div className="flex flex-row justify-between w-full">
                     <div className="w-1/2 md:hidden">
                         <ul className="px-6 py-4 flex flex-1 flex-col item-center justify-center  overflow-x-auto font-semibold text-blue-950">
-                            <li className="whitespace-nowrap flex items-center cursor-pointer text-base mb-1">
-                                Home
+                            <li
+                                className={`whitespace-nowrap flex items-center cursor-pointer text-base mb-1 ${
+                                    urlPathname == "/" ? "text-blue-500" : ""
+                                }`}
+                            >
+                                <a href="/">Home</a>
                             </li>
-                            <li className="whitespace-nowrap flex items-center cursor-pointer text-base mb-1">
-                                Katalog
+                            <li
+                                className={`whitespace-nowrap flex items-center cursor-pointer text-base mb-1 ${
+                                    urlPathname == "/katalog"
+                                        ? "text-blue-500"
+                                        : ""
+                                }`}
+                            >
+                                <a href="/katalog">Katalog</a>
                             </li>
-                            <li className="whitespace-nowrap flex items-center cursor-pointer text-base mb-1">
-                                Promo
+                            <li
+                                className={`whitespace-nowrap flex items-center cursor-pointer text-base mb-1 ${
+                                    urlPathname == "/promo"
+                                        ? "text-blue-500"
+                                        : ""
+                                }`}
+                            >
+                                <a href="/promo">Promo</a>
                             </li>
-                            <li className="whitespace-nowrap flex items-center cursor-pointer text-base mb-1">
-                                Cara Belanja
+                            <li
+                                className={`whitespace-nowrap flex items-center cursor-pointer text-base mb-1 ${
+                                    urlPathname == "/cara-belanja"
+                                        ? "text-blue-500"
+                                        : ""
+                                }`}
+                            >
+                                <a href="/cara-belanja">Cara Belanja</a>
                             </li>
                         </ul>
                     </div>
@@ -664,7 +778,7 @@ export default function Header() {
                                 <div className="flex flex-col px-6 py-4">
                                     <ul>
                                         <li className="font-medium mb-1 cursor-pointer text-blue-950 hover:text-blue-900">
-                                            Setelan
+                                            Pengaturan
                                         </li>
                                         <li className="font-medium mb-1 cursor-pointer text-blue-950 hover:text-blue-900">
                                             Wishlist
@@ -714,6 +828,7 @@ export default function Header() {
             {/* Login PopUp/Modal */}
             <LoginModal />
             {/* End Login PopUp/Modal */}
+            <LogoutModal />
         </>
     );
 }

@@ -7,6 +7,11 @@ const StateContext = createContext({
     openLogin: false,
     categoryData: [],
     categorySelected: null,
+    openLogoutModal: false,
+    toast: {
+        message: null,
+        show: true,
+    },
     setCurrentUser: () => {},
     setUserToken: () => {},
     setCart: () => {},
@@ -15,6 +20,7 @@ const StateContext = createContext({
     setOpenCartModal: () => {},
     setCategoryData: () => {},
     setCategorySelected: () => {},
+    setOpenLogoutModal: () => {},
 });
 
 const tmpCategory = [
@@ -315,6 +321,19 @@ export const ContextProvider = ({ children }) => {
     const [openCartModal, setOpenCartModal] = useState(false);
     const [categoryData, setCategoryData] = useState([]);
     const [categorySelected, _setCategorySelected] = useState();
+    const [openLogoutModal, setOpenLogoutModal] = useState(false);
+    const [toast, setToast] = useState({ message: "", show: false });
+
+    const showToast = (message) => {
+        setToast({ message, show: true });
+        setTimeout(() => {
+            setToast({ message: "", show: false });
+        }, 3000);
+    };
+
+    const closeToast = () => {
+        setToast({ message: "", show: false });
+    };
 
     const setUserToken = (token) => {
         if (token) {
@@ -354,6 +373,11 @@ export const ContextProvider = ({ children }) => {
                 setCategoryData,
                 categorySelected,
                 setCategorySelected,
+                openLogoutModal,
+                setOpenLogoutModal,
+                toast,
+                showToast,
+                closeToast,
             }}
         >
             {children}

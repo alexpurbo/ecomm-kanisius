@@ -70,8 +70,9 @@ export default function ProductListWithIcon({ title, color, products }) {
                     price: prod.prodPrice2,
                 })
                 .then(({ data }) => {
-                    console.log(data);
+                    // console.log(data);
                     setCartAmount();
+                    getCartData();
                 })
                 .catch((error) => {
                     if (error.response) {
@@ -88,6 +89,12 @@ export default function ProductListWithIcon({ title, color, products }) {
     const setCartAmount = () => {
         axiosClient.get("/cartAmount").then(({ data }) => {
             setItemAmount(data[0].cart_amount);
+        });
+    };
+
+    const getCartData = () => {
+        axiosClient.get("/cart").then(({ data }) => {
+            setCart(data.data);
         });
     };
 
@@ -169,7 +176,7 @@ export default function ProductListWithIcon({ title, color, products }) {
                                                         </div>
                                                     </a>
                                                     <div
-                                                        className="absolute hidden group-hover:block group-hover:-translate-x-9 bottom-[118px] bg-blue-950/70 hover:bg-blue-950 rounded-full h-7 w-7 -right-6 transition duration-700 ease-in-out cursor-pointer"
+                                                        className="absolute md:hidden block group-hover:block md:group-hover:-translate-x-9 bottom-[118px] bg-blue-950/70 hover:bg-blue-950 rounded-full h-7 w-7 md:-right-6 right-2 transition duration-700 ease-in-out cursor-pointer"
                                                         onClick={() =>
                                                             addToCart(prod)
                                                         }

@@ -51,11 +51,17 @@ export default function ProductDetail() {
                 {/* <Header /> */}
                 <Breadcrumbs />
                 <ProductDetailData id={id} />
-                <ProductList title="Produk Baru" dataProducts={newProducts} />
-                <ProductList
-                    title="Produk Pilihan"
-                    dataProducts={newProducts}
-                />
+                <div className="w-full mx-auto max-w-7xl mt-8">
+                    <ProductList
+                        title="Produk Baru"
+                        dataProducts={newProducts}
+                    />
+                    <ProductList
+                        title="Produk Pilihan"
+                        dataProducts={newProducts}
+                    />
+                </div>
+
                 {/* <Footer /> */}
             </PageComponent>
         </div>
