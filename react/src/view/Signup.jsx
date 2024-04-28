@@ -3,6 +3,7 @@ import axiosClient from "../axios";
 import logo from "../assets/img/kanisius.png";
 import { useStateContext } from "../contexts/ContextProvider.jsx";
 import { Navigate } from "react-router-dom";
+import { CgSpinner } from "react-icons/cg";
 
 export default function Signup() {
     const { setCurrentUser, setUserToken } = useStateContext();
@@ -11,10 +12,13 @@ export default function Signup() {
     const [password, setPassword] = useState("");
     const [passwordConfirmation, setPasswordConfirmation] = useState("");
     const [error, setError] = useState({ __html: "" });
+    const [signupLoading, setSignupLoading] = useState(false);
+    const [successNotif, setSuccessNotif] = useState(false);
 
     const onSubmit = (ev) => {
         ev.preventDefault();
         setError({ __html: "" });
+        setSignupLoading(true);
 
         axiosClient
             .post("/signup", {
@@ -26,7 +30,8 @@ export default function Signup() {
             .then(({ data }) => {
                 setCurrentUser(data.user);
                 setUserToken(data.token);
-
+                setSignupLoading(false);
+                setSuccessNotif(true);
                 // console.log(data);
             })
             .catch((error) => {
@@ -53,6 +58,17 @@ export default function Signup() {
                     className="mt-5 bg-red-500 rounded py-2 px-3 text-white text-center"
                     dangerouslySetInnerHTML={error}
                 ></div>
+            )}
+            {successNotif && (
+                <div className="text-center w-full mt-2">
+                    <div className="bg-green-500 text-white font-semibold py-2">
+                        Berhasil mendaftar, silahkan{" "}
+                        <a href="/login" className="hover:underline">
+                            klik disini
+                        </a>{" "}
+                        untuk login
+                    </div>
+                </div>
             )}
             <h1 className="mt-4 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
                 Daftar untuk Belanja di Toko Kanisius
@@ -159,8 +175,15 @@ export default function Signup() {
                         <button
                             type="submit"
                             className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                            disabled={signupLoading}
                         >
-                            Daftar
+                            {signupLoading ? (
+                                <div className="w-full flex justify-center">
+                                    <CgSpinner className="animate-spin rounded-full h-5 w-5 mr-3" />
+                                </div>
+                            ) : (
+                                <p>Daftar</p>
+                            )}
                         </button>
                     </div>
                 </form>

@@ -1,12 +1,23 @@
 import { XMarkIcon } from "@heroicons/react/24/solid";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { CgSpinner } from "react-icons/cg";
+import { useStateContext } from "../contexts/ContextProvider";
 
 export default function DeleteConfitmation({
     onTidakClick,
     onHapusClick,
     deleteLoading,
 }) {
+    const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        if (deleteLoading) {
+            setLoading(true);
+        } else {
+            setLoading(false);
+        }
+    }, []);
+
     return (
         <>
             <div className="relative">
@@ -32,16 +43,16 @@ export default function DeleteConfitmation({
                             <button
                                 className="bg-red-500 px-6 py-2 rounded-md shadow-md font-medium text-white hover:bg-red-600 hover:shadow-lg"
                                 onClick={() => onTidakClick()}
-                                disabled={deleteLoading ? true : false}
+                                disabled={loading ? true : false}
                             >
                                 Tidak
                             </button>
                             <button
                                 className={`bg-blue-500 px-6 py-2 rounded-md shadow-md font-medium text-white hover:bg-blue-600 hover:shadow-lg `}
-                                disabled={deleteLoading ? true : false}
+                                disabled={loading ? true : false}
                                 onClick={() => onHapusClick()}
                             >
-                                {deleteLoading ? (
+                                {loading ? (
                                     <div className="w-full flex justify-center">
                                         <CgSpinner className="animate-spin rounded-full h-5 w-5 mr-3" />
                                     </div>

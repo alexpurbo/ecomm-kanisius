@@ -12,6 +12,10 @@ const StateContext = createContext({
         message: null,
         show: true,
     },
+    addProductToast: {
+        product: null,
+        show: false,
+    },
     setCurrentUser: () => {},
     setUserToken: () => {},
     setCart: () => {},
@@ -323,6 +327,10 @@ export const ContextProvider = ({ children }) => {
     const [categorySelected, _setCategorySelected] = useState();
     const [openLogoutModal, setOpenLogoutModal] = useState(false);
     const [toast, setToast] = useState({ message: "", show: false });
+    const [addProductToast, setAddProductToast] = useState({
+        product: "",
+        show: false,
+    });
 
     const showToast = (message) => {
         setToast({ message, show: true });
@@ -331,8 +339,19 @@ export const ContextProvider = ({ children }) => {
         }, 3000);
     };
 
+    const showAddProductToast = (product) => {
+        setAddProductToast({ product, show: true });
+        setTimeout(() => {
+            setAddProductToast({ product: "", show: false });
+        }, 3000);
+    };
+
     const closeToast = () => {
         setToast({ message: "", show: false });
+    };
+
+    const closeAddProductToast = () => {
+        setAddProductToast({ product: "", show: false });
     };
 
     const setUserToken = (token) => {
@@ -378,6 +397,9 @@ export const ContextProvider = ({ children }) => {
                 toast,
                 showToast,
                 closeToast,
+                addProductToast,
+                showAddProductToast,
+                closeAddProductToast,
             }}
         >
             {children}

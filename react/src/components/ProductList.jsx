@@ -27,7 +27,7 @@ export default function ProductList({ title, dataProducts }) {
         setOpenLogin,
         setItemAmount,
         setCart,
-        showToast,
+        showAddProductToast,
     } = useStateContext();
 
     // console.log(products);
@@ -45,7 +45,7 @@ export default function ProductList({ title, dataProducts }) {
                     // console.log(data);
                     setCartAmount();
                     getCartData();
-                    showToast("Produk berhasil ditambahkan pada keranjang");
+                    showAddProductToast(prod.ProdDesc3);
                 })
                 .catch((error) => {
                     if (error.response) {

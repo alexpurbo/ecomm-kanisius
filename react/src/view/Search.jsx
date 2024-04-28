@@ -15,6 +15,7 @@ export default function Search() {
 
     const onPageClick = (link) => {
         getProducts(link.url);
+        window.scrollTo(0, 0);
     };
 
     const { setOpenLogin, currentUser, setItemAmount, setCart } =

@@ -8,6 +8,7 @@ import {
     XCircleIcon,
     UserIcon,
     ArrowRightStartOnRectangleIcon,
+    ChevronRightIcon,
 } from "@heroicons/react/24/solid";
 import React, { useEffect, useState } from "react";
 import logo from "../assets/img/kanisius.png";
@@ -26,14 +27,7 @@ export default function Header() {
     const [openCategory, setOpenCategory] = useState(false);
     const [categoryActive, setCategoryActive] = useState(0);
     const [categoryDetails, setCategoryDetails] = useState([]);
-    const [activeCategoryDetailName, setActiveCategoryDetailName] =
-        useState("");
-    const [subCategorys, setsubCategorys] = useState(false);
     const category = useStateContext();
-    const [openAccountThumb, setOpenAccountThumb] = useState(false);
-    // const [openLogin, setOpenLogin] = useState(false);
-    const [cartData, setCartData] = useState([]);
-    const [cartAmount, setCartAmount] = useState();
     const [titleSearch, setTitleSearch] = useState([]);
 
     const {
@@ -66,18 +60,6 @@ export default function Header() {
         setCategoryActive(id);
     };
 
-    const onCategoryDtlClick = (categoryNameDtl) => {
-        setActiveCategoryDetailName(categoryNameDtl);
-    };
-
-    const onMouseEnterCategoryDtl = (categoryNameDtl) => {
-        setActiveCategoryDetailName(categoryNameDtl);
-    };
-
-    const onMouseLeaveCategoryDtl = () => {
-        setActiveCategoryDetailName("");
-    };
-
     useEffect(() => {
         // console.log(window.location.pathname);
         setUrlPathname(window.location.pathname);
@@ -107,7 +89,6 @@ export default function Header() {
     const getCartData = () => {
         axiosClient.get("/cart").then(({ data }) => {
             // console.log(data[0].submenu);
-            setCartData(data.data);
             setCart(data.data);
         });
     };
@@ -558,14 +539,14 @@ export default function Header() {
                 }`}
                 onMouseLeave={() => setOpenCategory(!openCategory)}
             >
-                <div className="w-full max-w-7xl mx-auto px-8 py-4">
+                <div className="w-full max-w-7xl mx-auto md:px-8 px-3 py-4">
                     <div className="flex flex-row">
                         <div className="md:w-1/4 w-1/3 h-full max-h-72 overflow-auto scrollbar border-r-2 border-r-blue-950">
-                            <ul className="md:px-4 pr-4">
+                            <ul className="md:px-4">
                                 {categoryData
                                     ? categoryData.map((cat, index) => (
                                           <li
-                                              className="font-semibold text-blue-950 text-base mb-4"
+                                              className="relative flex flex-row items-center md:font-semibold font-medium text-blue-950 md:text-base text-sm mb-4 md:pr-0 pr-5"
                                               key={cat.katID}
                                           >
                                               <a
@@ -594,6 +575,26 @@ export default function Header() {
                                               >
                                                   {cat.katNama}
                                               </a>
+                                              {categoryData[categoryActive]
+                                                  .katNama == cat.katNama ? (
+                                                  <ChevronRightIcon
+                                                      className="absolute right-0.5 h-4 w-4 block md:hidden text-blue-800"
+                                                      onClick={() =>
+                                                          setCategoryActive(
+                                                              index
+                                                          )
+                                                      }
+                                                  />
+                                              ) : (
+                                                  <ChevronDownIcon
+                                                      className="absolute right-0.5 h-4 w-4 block md:hidden text-blue-950"
+                                                      onClick={() =>
+                                                          setCategoryActive(
+                                                              index
+                                                          )
+                                                      }
+                                                  />
+                                              )}
                                           </li>
                                       ))
                                     : ""}
@@ -606,14 +607,6 @@ export default function Header() {
                                           (dtl, index) => (
                                               <li
                                                   className="whitespace-nowrap lg:w-1/4 sm:w-1/2 w-full flex flex-col cursor-pointer text-sm pb-2 hover:text-blue-900"
-                                                  onMouseEnter={(ev) =>
-                                                      onMouseEnterCategoryDtl(
-                                                          dtl.katNama
-                                                      )
-                                                  }
-                                                  onMouseLeave={() =>
-                                                      onMouseLeaveCategoryDtl()
-                                                  }
                                                   key={dtl.katNama}
                                               >
                                                   <a
@@ -640,12 +633,7 @@ export default function Header() {
 
                                                   {dtl.submenuDtl.length ? (
                                                       <ul
-                                                          className={`${
-                                                              activeCategoryDetailName ==
-                                                              dtl.katNama
-                                                                  ? "flex"
-                                                                  : "hidden"
-                                                          } flex-wrap flex-col font-semibold text-blue-950 pt-1`}
+                                                          className={`flex flex-wrap flex-col font-semibold text-blue-950 pt-1`}
                                                       >
                                                           {dtl.submenuDtl.map(
                                                               (sub) => (

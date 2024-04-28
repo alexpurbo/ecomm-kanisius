@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PageComponent from "../components/PageComponent";
 import {
     MinusIcon,
@@ -11,6 +11,7 @@ import { FormatRupiah } from "@arismun/format-rupiah";
 import axiosClient from "../axios";
 import { CgSpinner } from "react-icons/cg";
 import { Navigate } from "react-router-dom";
+import { fetchROAPI } from "../utils/rajaOngkir";
 
 export default function () {
     const { currentUser, cart, setCart, setItemAmount, showToast, userToken } =
@@ -22,6 +23,7 @@ export default function () {
     const [deleteLoading, setDeleteLoading] = useState(false);
     const [addCartLoading, setAddCartLoading] = useState(false);
     const [pageLoading, setPageLoading] = useState(false);
+    const [province, setProvince] = useState([]);
 
     const total = cart.reduce(
         (a, v) => (a = a + v.cart_price * v.cart_amount),
@@ -116,6 +118,23 @@ export default function () {
         });
     };
 
+    const setCourierData = () => {
+        axiosClient
+            .post("/getCourierOptionByOriginAndDestination")
+            .then(({ data }) => {
+                // setCategory(data.data);
+                // setCategoryId(data.data[0].katID.substring(0, 2));
+                // console.log("setsetProvinceData");
+                console.log(data);
+            });
+    };
+
+    useEffect(() => {
+        setProvinceData();
+        setCityData();
+        setCourierData();
+    }, []);
+
     return (
         <div>
             <PageComponent>
@@ -138,7 +157,7 @@ export default function () {
 
                             <div className="w-full px-8 py-6">
                                 <h1 className="mb-4 text-xl font-bold text-center">
-                                    Hapus {prodName} dari keranjang ? {cartId}
+                                    Hapus {prodName} dari keranjang ?
                                 </h1>
 
                                 <div className="w-3/4 mx-auto">
@@ -207,9 +226,7 @@ export default function () {
                 </div>
 
                 <div className="w-full mx-auto max-w-7xl md:mt-12 mt-8 md:px-8 px-2">
-                    {pageLoading ? (
-                        <div className="bg-slate-200 rounded-xl w-full h-48"></div>
-                    ) : (
+                    {cart ? (
                         <div className="flex md:flex-row flex-col bg-slate-200 rounded-xl">
                             <div className="md:w-3/5 w-full">
                                 {cart.map((data, index) => (
@@ -307,11 +324,11 @@ export default function () {
                                             Rincian Belanja
                                         </h1>
                                         <span className="h-0.5 w-full bg-slate-200 mb-2"></span>
-                                        <div className="flex flex-row items-center justify-between mb-10">
-                                            <p className="font-medium text-slate-700 text-sm">
+                                        <div className="flex flex-row items-center justify-between mb-10 px-4">
+                                            <p className="font-medium text-slate-700 text-base">
                                                 Total Belanja
                                             </p>
-                                            <p className="font-bold text-black text-sm">
+                                            <p className="font-bold text-black text-base">
                                                 <FormatRupiah value={total} />
                                             </p>
                                         </div>
@@ -324,6 +341,8 @@ export default function () {
                                 </div>
                             </div>
                         </div>
+                    ) : (
+                        <div className="bg-slate-200 rounded-xl w-full h-48"></div>
                     )}
                 </div>
             </PageComponent>

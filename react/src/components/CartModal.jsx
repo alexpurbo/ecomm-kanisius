@@ -113,21 +113,6 @@ export default function CartModal() {
                                                         </Link>
                                                     </h1>
                                                     <div className="pl-4 flex flex-row items-center">
-                                                        {/* <div className="flex flex-row">
-                                                            <button className="bg-slate-300 px-1 rounded-l-md">
-                                                                <MinusIcon className="h-3 w-3" />
-                                                            </button>
-                                                            <input
-                                                                type="text"
-                                                                className="w-10 text-center"
-                                                                value={
-                                                                    data.cart_amount
-                                                                }
-                                                            />
-                                                            <button className="bg-slate-300 px-1 rounded-r-md">
-                                                                <PlusIcon className="h-3 w-3" />
-                                                            </button>
-                                                        </div> */}
                                                         {data.cart_amount} x{" "}
                                                         <FormatRupiah
                                                             value={

@@ -9,6 +9,7 @@ import CaraBelanja from "./view/CaraBelanja";
 import Katalog from "./view/Katalog";
 import Promo from "./view/Promo";
 import Cart from "./view/Cart";
+import Checkout from "./view/Checkout";
 
 const router = createBrowserRouter([
     {
@@ -30,6 +31,10 @@ const router = createBrowserRouter([
     {
         path: "/cart",
         element: <Cart />,
+    },
+    {
+        path: "/checkout",
+        element: <Checkout />,
     },
     {
         path: "/product-detail/:id",

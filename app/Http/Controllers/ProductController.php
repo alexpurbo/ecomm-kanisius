@@ -110,19 +110,22 @@ class ProductController extends Controller
 
     public function getProductByCategory($id)
     {
-        // $data = DB::select("SELECT katProdId, katKatID, prodId, prodDesc3, prodISBN, prodPrice2 FROM ref_prod_kategori LEFT JOIN ref_prod_invtf ON katProdId=prodId WHERE katKatID = '" . $id . "'")->paginate(15)->get();
-
-        // $data = arrayToObject($data);
-
-        // $data = DB::table('notices')
-        // ->join('users', 'notices.user_id', '=', 'users.id')
-        // ->join('departments', 'users.dpt_id', '=', 'departments.id')
-        // ->select('notices.id', 'notices.title', 'notices.body', 'notices.created_at', 'notices.updated_at', 'users.name', 'departments.department_name')
-        // ->paginate(20);
-
         $data = DB::table('ref_prod_kategori')
             ->join('ref_prod_invtf', 'ref_prod_kategori.katProdId', '=', 'ref_prod_invtf.prodId')
             ->where('ref_prod_kategori.katKatID', $id)
+            ->select('*')
+            ->paginate(20);
+
+        return $data;
+    }
+
+    public function getProductByCategoryFirst($id)
+    {
+        // SELECT * FROM ref_prod_kategori LEFT JOIN ref_prod_invtf ON katProdId = prodId WHERE katKatID LIKE '01%' AND stok > 0
+        $data = DB::table('ref_prod_kategori')
+            ->join('ref_prod_invtf', 'ref_prod_kategori.katProdId', '=', 'ref_prod_invtf.prodId')
+            ->where('ref_prod_kategori.katKatID', 'LIKE', '%' . $id . '%')
+            ->groupBy('katProdId')
             ->select('*')
             ->paginate(20);
 

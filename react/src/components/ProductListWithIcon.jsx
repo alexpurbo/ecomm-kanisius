@@ -17,7 +17,13 @@ import { useStateContext } from "../contexts/ContextProvider";
 import axiosClient from "../axios";
 
 export default function ProductListWithIcon({ title, color, products }) {
-    const { currentUser, setOpenLogin, setItemAmount } = useStateContext();
+    const {
+        currentUser,
+        setOpenLogin,
+        setItemAmount,
+        showAddProductToast,
+        setCart,
+    } = useStateContext();
 
     const settings = {
         slidesToShow: 5, // lg
@@ -73,6 +79,7 @@ export default function ProductListWithIcon({ title, color, products }) {
                     // console.log(data);
                     setCartAmount();
                     getCartData();
+                    showAddProductToast(prod.ProdDesc3);
                 })
                 .catch((error) => {
                     if (error.response) {
