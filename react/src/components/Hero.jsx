@@ -1,5 +1,6 @@
 import React from "react";
 import HeroSlider from "./HeroSlider";
+import { NavLink } from "react-router-dom";
 
 export default function Hero() {
     return (
@@ -30,9 +31,11 @@ export default function Hero() {
                             <p className="font-medium text-slate-700 text-justify leading-6 mt-2">
                                 Pelajari tentang KRC dan bergabung dengan kami
                             </p>
-                            <button className="mt-2 px-6 py-3 bg-blue-950 text-white font-bold rounded-md shadow-md hover:bg-white border hover:border-blue-950 hover:text-blue-950">
-                                Selengkapnya
-                            </button>
+                            <NavLink to={"/krc"}>
+                                <button className="mt-2 px-6 py-3 bg-blue-950 text-white font-bold rounded-md shadow-md hover:bg-white border hover:border-blue-950 hover:text-blue-950">
+                                    Selengkapnya
+                                </button>
+                            </NavLink>
                         </div>
                     </div>
                     <div className="lg:w-1/2 w-full">

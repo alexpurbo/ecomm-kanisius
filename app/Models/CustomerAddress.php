@@ -15,5 +15,5 @@ class CustomerAddress extends Model
     protected $primaryKey = 'alamat_id';
     public $timestamps = false;
 
-    protected $fillable = ['alamat_customer', 'alamat_provinsi', 'alamat_city', 'alamat_lengkap', 'alamat_hp', 'alamat_penerima'];
+    protected $fillable = ['alamat_customer', 'alamat_provinsi', 'alamat_city', 'alamat_lengkap', 'alamat_hp', 'alamat_penerima', 'alamat_subdistrict', 'alamat_tipe'];
 }

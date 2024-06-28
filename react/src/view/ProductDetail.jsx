@@ -7,8 +7,10 @@ import ProductList from "../components/ProductList";
 import ProductDetailData from "../components/ProductDetailData";
 import { useParams } from "react-router-dom";
 import PageComponent from "../components/PageComponent";
+import { useStateContext } from "../contexts/ContextProvider";
 
 export default function ProductDetail() {
+    const { setUrlPathname } = useStateContext();
     const [kelKategori, setKelKategori] = useState([]);
     const { id } = useParams();
     const [newProducts, setNewProducts] = useState([]);
@@ -40,6 +42,7 @@ export default function ProductDetail() {
     useEffect(() => {
         getNewProduct();
         getSpiritualProduct();
+        setUrlPathname("product-detail");
         // getDataProduct();
         // console.log(id);
     }, []);

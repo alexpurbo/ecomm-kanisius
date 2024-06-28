@@ -1,13 +1,8 @@
-import {
-    MinusIcon,
-    PlusIcon,
-    TrashIcon,
-    XMarkIcon,
-} from "@heroicons/react/24/solid";
+import { XMarkIcon } from "@heroicons/react/24/solid";
 import React, { useContext, useState } from "react";
 import { useStateContext } from "../contexts/ContextProvider";
 import { FormatRupiah } from "@arismun/format-rupiah";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import axiosClient from "../axios";
 import DeleteConfitmation from "./DeleteConfitmation";
 
@@ -93,9 +88,14 @@ export default function CartModal() {
                     </div>
                     <div className="flex flex-col py-8 px-4">
                         <div className="flex flex-row justify-between mt-2">
-                            <h1 className="font-semibold text-lg text-black">
-                                Keranjang ({itemAmount})
-                            </h1>
+                            <NavLink
+                                to={"/cart"}
+                                onClick={() => setOpenCartModal()}
+                            >
+                                <h1 className="font-semibold text-lg text-black">
+                                    Keranjang ({itemAmount})
+                                </h1>
+                            </NavLink>
                         </div>
                         <div className="mt-1 border border-t-2 border-t-blue-950 w-full"></div>
                         <div className="mt-1">
@@ -106,11 +106,11 @@ export default function CartModal() {
                                             <div className="flex flex-row justify-between mb-2">
                                                 <div className="flex flex-col">
                                                     <h1 className="font-light line-clamp-2 mb-1">
-                                                        <Link
+                                                        <NavLink
                                                             to={`/product-detail/${data.cart_product}`}
                                                         >
                                                             {data.ProdDesc3}
-                                                        </Link>
+                                                        </NavLink>
                                                     </h1>
                                                     <div className="pl-4 flex flex-row items-center">
                                                         {data.cart_amount} x{" "}
@@ -143,14 +143,14 @@ export default function CartModal() {
                         </div>
                         <div className="flex flex-row justify-around mt-4">
                             <div className="w-1/2 mx-1">
-                                <Link
+                                <NavLink
                                     to={"/cart"}
                                     onClick={() => setOpenCartModal()}
                                 >
                                     <div className="w-full bg-blue-950 rounded-md shadow-md text-white font-medium py-1.5 hover:scale-105 transition duration-200 text-center">
                                         Lihat Cart
                                     </div>
-                                </Link>
+                                </NavLink>
                             </div>
                             <div className="w-1/2 mx-2">
                                 <button

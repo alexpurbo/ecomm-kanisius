@@ -10,12 +10,19 @@ import { useStateContext } from "../contexts/ContextProvider";
 import { FormatRupiah } from "@arismun/format-rupiah";
 import axiosClient from "../axios";
 import { CgSpinner } from "react-icons/cg";
-import { Navigate } from "react-router-dom";
+import { Link, NavLink, Navigate } from "react-router-dom";
 import { fetchROAPI } from "../utils/rajaOngkir";
 
 export default function () {
-    const { currentUser, cart, setCart, setItemAmount, showToast, userToken } =
-        useStateContext();
+    const {
+        currentUser,
+        cart,
+        setCart,
+        setItemAmount,
+        showToast,
+        userToken,
+        setUrlPathname,
+    } = useStateContext();
     const [newAmount, setNewAmount] = useState();
     const [openDeleteConfirm, setopenDeleteConfirm] = useState(false);
     const [cartId, setCartId] = useState();
@@ -130,9 +137,7 @@ export default function () {
     };
 
     useEffect(() => {
-        setProvinceData();
-        setCityData();
-        setCourierData();
+        setUrlPathname("cart");
     }, []);
 
     return (
@@ -333,9 +338,12 @@ export default function () {
                                             </p>
                                         </div>
                                         <div className="w-full flex justify-center">
-                                            <button className="w-2/3 py-2 bg-blue-950 text-center text-white rounded-lg font-semibold shadow-lg hover:bg-blue-900">
+                                            <NavLink
+                                                to={"/checkout"}
+                                                className="w-2/3 py-2 bg-blue-950 text-center text-white rounded-lg font-semibold shadow-lg hover:bg-blue-900"
+                                            >
                                                 Lanjutkan Pembelian
-                                            </button>
+                                            </NavLink>
                                         </div>
                                     </div>
                                 </div>

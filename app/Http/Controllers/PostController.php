@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Http;
 
 class PostController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      *
@@ -81,36 +82,22 @@ class PostController extends Controller
 
     public function getProvinceData()
     {
-        // $response = Http::get('https://api.rajaongkir.com/starter/province?key=7335611ba24c5e032e10fe8cde45f910');
+        $apiKey = config('services.rajaongkir.key');
 
-        // $response = Http::withHeaders(['key' => '7335611ba24c5e032e10fe8cde45f910'])
-        //     ->get('https://api.rajaongkir.com/starter/province', ['id' => '12']);
-
-        $response = Http::withHeaders(['key' => '7335611ba24c5e032e10fe8cde45f910'])
-            ->get('https://api.rajaongkir.com/starter/province');
+        $response = Http::withHeaders(['key' => $apiKey])
+            ->get('https://pro.rajaongkir.com/api/province');
         $posts = $response->json();
 
         return $posts;
-
-        // foreach ($response as $data) {
-        //     $fixData[] = [
-        //         'value' => $data->province_id,
-        //         'label' => $data->province
-        //     ];
-        // }
-
-        // return $fixData->json();
     }
 
     public function getProvinceDataOption()
     {
-        // $response = Http::get('https://api.rajaongkir.com/starter/province?key=7335611ba24c5e032e10fe8cde45f910');
+        $apiKey = config('services.rajaongkir.key');
 
-        // $response = Http::withHeaders(['key' => '7335611ba24c5e032e10fe8cde45f910'])
-        //     ->get('https://api.rajaongkir.com/starter/province', ['id' => '12']);
-
-        $response = Http::withHeaders(['key' => '7335611ba24c5e032e10fe8cde45f910'])
-            ->get('https://api.rajaongkir.com/starter/province');
+        $response = Http::withHeaders(['key' => $apiKey])
+            ->get('https://pro.rajaongkir.com/api/province');
+        // ->get('https://api.rajaongkir.com/starter/province');
         $posts = $response->json();
 
 
@@ -126,23 +113,41 @@ class PostController extends Controller
 
     public function getCityByProvinceId($id)
     {
-        $response = Http::withHeaders(['key' => '7335611ba24c5e032e10fe8cde45f910'])
-            ->get('https://api.rajaongkir.com/starter/city', ['province' => $id]);
+        $apiKey = config('services.rajaongkir.key');
+
+        $response = Http::withHeaders(['key' => $apiKey])
+            ->get('https://pro.rajaongkir.com/api/city', ['province' => $id]);
         $posts = $response->json();
 
         return $posts;
     }
 
-    public function getCourierOptionByOriginAndDestination()
+    public function getSubdistrictData($id)
     {
-        $response = Http::withHeaders(['key' => '7335611ba24c5e032e10fe8cde45f910'])
+        $apiKey = config('services.rajaongkir.key');
+
+        $response = Http::withHeaders(['key' => $apiKey])
+            ->get('https://pro.rajaongkir.com/api/subdistrict', ['city' => $id]);
+        $posts = $response->json();
+
+        return $posts;
+    }
+
+    public function getCourierOptionByOriginAndDestination(Request $request)
+    {
+        $apiKey = config('services.rajaongkir.key');
+
+        $response = Http::withHeaders(['key' => $apiKey])
             ->post(
-                'https://api.rajaongkir.com/starter/cost',
+                'https://pro.rajaongkir.com/api/cost',
                 [
-                    'origin' => '501',
-                    'destination' => '114',
-                    'weight' => '1700',
-                    'courier' => 'jne'
+                    'origin' => '5781',
+                    'destination' => $request->destination,
+                    'weight' => $request->weight,
+                    'courier' => 'jne:pos:tiki',
+                    'originType' => 'subdistrict',
+                    'destinationType' => 'subdistrict'
+                    // 	https://pro.rajaongkir.com/api/cost
                 ]
             );
         $posts = $response->json();

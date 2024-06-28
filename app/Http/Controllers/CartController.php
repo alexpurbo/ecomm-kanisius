@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cart;
+use App\Services\Midtrans\CreateSnapTokenService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Midtrans\Snap;
 
 class CartController extends Controller
 {
@@ -154,5 +156,43 @@ class CartController extends Controller
 
         $delete = DB::table('tb_cart')->where('cart_customer', $id)->delete();
         return $delete;
+    }
+
+    public function getSnapToken(Request $request)
+    {
+        $params = [
+            'transaction_details' => array(
+                'order_id' => rand(),
+                'gross_amount' => $request->transaction['total'],
+            ),
+            'customer_details' => array(
+                'first_name' => $request->currentUser['custNama'],
+                // 'last_name' => 'pratama',
+                'email' => $request->currentUser['custEmail'],
+                'phone' => '08111222333',
+            ),
+        ];
+
+        $data = [
+            'first_name' => $request->currentUser['custNama'],
+            'email' =>  $request->currentUser['custNama'],
+            'amount' => $request->transaction['total'],
+        ];
+
+        foreach ($request->details as $dataCart) {
+            $details[] = [
+                'id' => $dataCart['id'],
+                'price' => $dataCart['price'],
+                'quantity' => 1,
+                'name' => $dataCart['desc'],
+            ];
+        }
+
+        $params['item_details'] = $details;
+
+        $midtrans = new CreateSnapTokenService();
+        $snapToken = $midtrans->getSnapToken($params);
+
+        return $snapToken;
     }
 }

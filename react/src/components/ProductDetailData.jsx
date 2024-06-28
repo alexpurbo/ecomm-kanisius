@@ -58,6 +58,14 @@ export default function ProductDetailData(id) {
         });
     }, []);
 
+    useEffect(() => {
+        getDataProduct();
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+        });
+    }, [id]);
+
     const addToCart = (prod) => {
         if (currentUser.C_ID) {
             axiosClient

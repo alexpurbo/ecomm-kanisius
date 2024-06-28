@@ -1,7 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PageComponent from "../components/PageComponent";
+import { useStateContext } from "../contexts/ContextProvider";
 
 export default function CaraBelanja() {
+    const { setUrlPathname } = useStateContext();
+
+    useEffect(() => {
+        setUrlPathname("/cara-belanja");
+    }, []);
     return (
         <div>
             <PageComponent>

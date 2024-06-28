@@ -25,6 +25,8 @@ const StateContext = createContext({
     setCategoryData: () => {},
     setCategorySelected: () => {},
     setOpenLogoutModal: () => {},
+    urlPathname: "/",
+    setUrlPathname: () => {},
 });
 
 const tmpCategory = [
@@ -331,6 +333,7 @@ export const ContextProvider = ({ children }) => {
         product: "",
         show: false,
     });
+    const [urlPathname, setUrlPathname] = useState("/");
 
     const showToast = (message) => {
         setToast({ message, show: true });
@@ -400,6 +403,8 @@ export const ContextProvider = ({ children }) => {
                 addProductToast,
                 showAddProductToast,
                 closeAddProductToast,
+                urlPathname,
+                setUrlPathname,
             }}
         >
             {children}

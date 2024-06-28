@@ -17,7 +17,7 @@ import { useStateContext } from "../contexts/ContextProvider";
 import axiosClient from "../axios";
 import LoginModal from "./LoginModal";
 import CartModal from "./CartModal";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, NavLink, Navigate, useNavigate } from "react-router-dom";
 import LogoutModal from "./LogoutModal";
 
 export default function Header() {
@@ -47,6 +47,7 @@ export default function Header() {
         setCategoryData,
         setCategorySelected,
         setOpenLogoutModal,
+        urlPathname,
     } = useStateContext();
     const [custEmail, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -54,16 +55,18 @@ export default function Header() {
     const [openProfileList, setOpenProfileList] = useState(false);
     const [keyword, setKeyword] = useState();
     const navigate = useNavigate();
-    const [urlPathname, setUrlPathname] = useState();
+    // const [urlPathname, setUrlPathname] = useState();
 
     const onCategoryHover = (id) => {
         setCategoryActive(id);
     };
 
+    const onCategoryClick = (catId) => {
+        setCategorySelected(catId);
+        setOpenCategory(false);
+    };
+
     useEffect(() => {
-        // console.log(window.location.pathname);
-        setUrlPathname(window.location.pathname);
-        // this.context.router.route.location.pathname === this.props.to
         setCategoryDetails(category.categorys[0]);
         if (userToken) {
             getUserData();
@@ -128,16 +131,9 @@ export default function Header() {
 
     const logout = (ev) => {
         ev.preventDefault();
-        // axiosClient.post("/logout").then((res) => {
         setOpenProfileList(false);
         setOpenSidebar(false);
         setOpenLogoutModal(true);
-
-        //     setCurrentUser({});
-        //     setUserToken(null);
-        //     setItemAmount(0);
-        //     setCart([]);
-        // });
     };
 
     return (
@@ -151,9 +147,9 @@ export default function Header() {
                     <nav className="relative flex flex-row items-center justify-between mt-2 mb-4">
                         {/* Logo */}
                         <div className="w-1/5">
-                            <a
-                                href="/"
-                                className="font-bold text-lg text-white"
+                            <NavLink
+                                to={"/"}
+                                className={"font-bold text-lg text-white"}
                             >
                                 <img
                                     src={logo}
@@ -165,8 +161,8 @@ export default function Header() {
                                     alt=""
                                     className="h-14 sm:hidden"
                                 />
-                                {/* KANISIUS SHOP */}
-                            </a>
+                            </NavLink>
+                            {/* KANISIUS SHOP */}
                         </div>
                         {/* Kategori and Search bar */}
                         <div className="w-3/5 hidden lg:block ">
@@ -389,7 +385,16 @@ export default function Header() {
                                     <div className="flex flex-col px-6 py-4">
                                         <ul>
                                             <li className="font-medium mb-1 cursor-pointer text-blue-950 hover:text-blue-900">
-                                                Pengaturan akun
+                                                <NavLink
+                                                    to={"/my-account"}
+                                                    onClick={() =>
+                                                        setOpenProfileList(
+                                                            false
+                                                        )
+                                                    }
+                                                >
+                                                    Pengaturan akun
+                                                </NavLink>
                                             </li>
                                             <li className="font-medium mb-1 cursor-pointer text-blue-950 hover:text-blue-900">
                                                 Wishlist
@@ -493,7 +498,7 @@ export default function Header() {
                                             : ""
                                     } whitespace-nowrap flex items-center text-sm flex-col`}
                                 >
-                                    <a href="/">Home</a>
+                                    <NavLink to={"/"}>Home</NavLink>
                                 </li>
                                 <li
                                     className={`${
@@ -502,7 +507,7 @@ export default function Header() {
                                             : ""
                                     } whitespace-nowrap flex items-center text-sm flex-col`}
                                 >
-                                    <a href="/katalog">Katalog</a>
+                                    <NavLink to={"/katalog"}>Katalog</NavLink>
                                 </li>
                                 <li
                                     className={`${
@@ -511,7 +516,7 @@ export default function Header() {
                                             : ""
                                     } whitespace-nowrap flex items-center text-sm flex-col`}
                                 >
-                                    <a href="/promo">Promo</a>
+                                    <NavLink to={"/promo"}>Promo</NavLink>
                                 </li>
                                 <li
                                     className={`${
@@ -520,7 +525,18 @@ export default function Header() {
                                             : ""
                                     } whitespace-nowrap flex items-center text-sm flex-col`}
                                 >
-                                    <a href="/cara-belanja">Cara Belanja</a>
+                                    <NavLink to={"/cara-belanja"}>
+                                        Cara Belanja
+                                    </NavLink>
+                                </li>
+                                <li
+                                    className={`${
+                                        urlPathname == "/krc"
+                                            ? "text-blue-600"
+                                            : ""
+                                    } whitespace-nowrap flex items-center text-sm flex-col`}
+                                >
+                                    <NavLink to={"/krc"}>KRC</NavLink>
                                 </li>
                             </ul>
                         </div>
@@ -537,7 +553,7 @@ export default function Header() {
                 className={`fixed bg-white  left-0 z-40 w-full shadow-md pb-8 max-h-80 transition-all ease-in-out duration-300 ${
                     openCategory ? "md:top-28 top-[78px]" : "-top-96"
                 }`}
-                onMouseLeave={() => setOpenCategory(!openCategory)}
+                onMouseLeave={() => setOpenCategory(false)}
             >
                 <div className="w-full max-w-7xl mx-auto md:px-8 px-3 py-4">
                     <div className="flex flex-row">
@@ -549,7 +565,7 @@ export default function Header() {
                                               className="relative flex flex-row items-center md:font-semibold font-medium text-blue-950 md:text-base text-sm mb-4 md:pr-0 pr-5"
                                               key={cat.katID}
                                           >
-                                              <a
+                                              <NavLink
                                                   className={`hover:text-blue-800 ${
                                                       categoryData[
                                                           categoryActive
@@ -557,7 +573,7 @@ export default function Header() {
                                                           ? "text-blue-800"
                                                           : ""
                                                   }`}
-                                                  href={`/category/${cat.katNama
+                                                  to={`/category/${cat.katNama
                                                       .replace(/\s+/g, "-")
                                                       .toLowerCase()}`}
                                                   key={index}
@@ -565,7 +581,7 @@ export default function Header() {
                                                       onCategoryHover(index)
                                                   }
                                                   onClick={() =>
-                                                      setCategorySelected(
+                                                      onCategoryClick(
                                                           (
                                                               "000000" +
                                                               cat.katID
@@ -574,7 +590,7 @@ export default function Header() {
                                                   }
                                               >
                                                   {cat.katNama}
-                                              </a>
+                                              </NavLink>
                                               {categoryData[categoryActive]
                                                   .katNama == cat.katNama ? (
                                                   <ChevronRightIcon
@@ -609,9 +625,9 @@ export default function Header() {
                                                   className="whitespace-nowrap lg:w-1/4 sm:w-1/2 w-full flex flex-col cursor-pointer text-sm pb-2 hover:text-blue-900"
                                                   key={dtl.katNama}
                                               >
-                                                  <a
+                                                  <NavLink
                                                       className="whitespace-nowrap lg:w-1/4 sm:w-1/2 w-full "
-                                                      href={`/category/${categoryData[
+                                                      to={`/category/${categoryData[
                                                           categoryActive
                                                       ].katNama
                                                           .replace(/\s+/g, "-")
@@ -620,7 +636,7 @@ export default function Header() {
                                                           .toLowerCase()}`}
                                                       key={index}
                                                       onClick={() =>
-                                                          setCategorySelected(
+                                                          onCategoryClick(
                                                               (
                                                                   "000000" +
                                                                   dtl.katID
@@ -629,7 +645,7 @@ export default function Header() {
                                                       }
                                                   >
                                                       {dtl.katNama}
-                                                  </a>
+                                                  </NavLink>
 
                                                   {dtl.submenuDtl.length ? (
                                                       <ul
@@ -637,9 +653,9 @@ export default function Header() {
                                                       >
                                                           {dtl.submenuDtl.map(
                                                               (sub) => (
-                                                                  <a
+                                                                  <NavLink
                                                                       className="whitespace-nowrap lg:w-1/4 sm:w-1/2 w-full"
-                                                                      href={`/category/${categoryData[
+                                                                      to={`/category/${categoryData[
                                                                           categoryActive
                                                                       ].katNama
                                                                           .replace(
@@ -661,7 +677,7 @@ export default function Header() {
                                                                           sub.katID
                                                                       }
                                                                       onClick={() =>
-                                                                          setCategorySelected(
+                                                                          onCategoryClick(
                                                                               (
                                                                                   "000000" +
                                                                                   sub.katID
@@ -681,7 +697,7 @@ export default function Header() {
                                                                               sub.katNama
                                                                           }
                                                                       </li>
-                                                                  </a>
+                                                                  </NavLink>
                                                               )
                                                           )}
                                                       </ul>
@@ -727,7 +743,7 @@ export default function Header() {
                                     urlPathname == "/" ? "text-blue-500" : ""
                                 }`}
                             >
-                                <a href="/">Home</a>
+                                <NavLink to={"/"}>Home</NavLink>
                             </li>
                             <li
                                 className={`whitespace-nowrap flex items-center cursor-pointer text-base mb-1 ${
@@ -736,7 +752,7 @@ export default function Header() {
                                         : ""
                                 }`}
                             >
-                                <a href="/katalog">Katalog</a>
+                                <NavLink to={"/katalog"}>Katalog</NavLink>
                             </li>
                             <li
                                 className={`whitespace-nowrap flex items-center cursor-pointer text-base mb-1 ${
@@ -745,7 +761,7 @@ export default function Header() {
                                         : ""
                                 }`}
                             >
-                                <a href="/promo">Promo</a>
+                                <NavLink to={"/promo"}>Promo</NavLink>
                             </li>
                             <li
                                 className={`whitespace-nowrap flex items-center cursor-pointer text-base mb-1 ${
@@ -754,7 +770,16 @@ export default function Header() {
                                         : ""
                                 }`}
                             >
-                                <a href="/cara-belanja">Cara Belanja</a>
+                                <NavLink to={"/cara-belanja"}>
+                                    Cara Belanja
+                                </NavLink>
+                            </li>
+                            <li
+                                className={`whitespace-nowrap flex items-center cursor-pointer text-base mb-1 ${
+                                    urlPathname == "/krc" ? "text-blue-500" : ""
+                                }`}
+                            >
+                                <NavLink to={"/krc"}>KRC</NavLink>
                             </li>
                         </ul>
                     </div>
@@ -766,7 +791,14 @@ export default function Header() {
                                 <div className="flex flex-col px-6 py-4">
                                     <ul>
                                         <li className="font-medium mb-1 cursor-pointer text-blue-950 hover:text-blue-900">
-                                            Pengaturan
+                                            <NavLink
+                                                to={"/my-account"}
+                                                onClick={() =>
+                                                    setOpenProfileList(false)
+                                                }
+                                            >
+                                                Pengaturan
+                                            </NavLink>
                                         </li>
                                         <li className="font-medium mb-1 cursor-pointer text-blue-950 hover:text-blue-900">
                                             Wishlist

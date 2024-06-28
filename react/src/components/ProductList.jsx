@@ -15,6 +15,7 @@ import { PlusIcon } from "@heroicons/react/24/solid";
 import { useStateContext } from "../contexts/ContextProvider";
 import axiosClient from "../axios";
 import LoginModal from "./LoginModal";
+import { NavLink } from "react-router-dom";
 
 export default function ProductList({ title, dataProducts }) {
     // const [products, setProducts] = useState(dataProducts);
@@ -138,8 +139,8 @@ export default function ProductList({ title, dataProducts }) {
                                         // index < 6 && (
                                         <div className="px-2" key={prod.prodId}>
                                             <div className="relative h-[310px] xs:h-[275px] sm:h-[310px] md:h-[295px] lg:h-[330px] border border-slate-200 rounded-lg shadow-md lg:w-[153px] md:w-[136px] sm:w-[196px] w-[142px] group transition">
-                                                <a
-                                                    href={`/product-detail/${prod.prodId}`}
+                                                <NavLink
+                                                    to={`/product-detail/${prod.prodId}`}
                                                 >
                                                     <div className="w-full p-2">
                                                         <div className="flex items-center justify-center relative">
@@ -180,7 +181,7 @@ export default function ProductList({ title, dataProducts }) {
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </a>
+                                                </NavLink>
                                                 <div
                                                     className="absolute md:hidden block group-hover:block md:group-hover:-translate-x-9 bottom-[118px] bg-blue-950/70 hover:bg-blue-950 rounded-full h-7 w-7 md:-right-6 right-2 transition duration-700 ease-in-out cursor-pointer"
                                                     onClick={() =>

@@ -8,6 +8,7 @@ import axiosClient from "../axios";
 import { FormatRupiah } from "@arismun/format-rupiah";
 
 export default function Search() {
+    const { setUrlPathname } = useStateContext();
     const { keyword } = useParams();
     const [products, setProducts] = useState([]);
     const [productData, setProductData] = useState([]);
@@ -74,6 +75,7 @@ export default function Search() {
 
     useEffect(() => {
         getProducts();
+        setUrlPathname("/search");
     }, []);
 
     return (

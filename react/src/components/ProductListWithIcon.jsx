@@ -15,6 +15,7 @@ import { FormatRupiah } from "@arismun/format-rupiah";
 import { PlusIcon } from "@heroicons/react/24/solid";
 import { useStateContext } from "../contexts/ContextProvider";
 import axiosClient from "../axios";
+import { NavLink } from "react-router-dom";
 
 export default function ProductListWithIcon({ title, color, products }) {
     const {
@@ -139,8 +140,8 @@ export default function ProductListWithIcon({ title, color, products }) {
                                                 key={prod.prodId}
                                             >
                                                 <div className="relative h-[310px] xs:h-[275px] sm:h-[310px] md:h-[295px] lg:h-[330px] w-full border border-slate-200 rounded-lg shadow-md cursor-pointer bg-white group transition">
-                                                    <a
-                                                        href={`/product-detail/${prod.prodId}`}
+                                                    <NavLink
+                                                        to={`/product-detail/${prod.prodId}`}
                                                     >
                                                         <div className="w-full p-2 flex items-center flex-col">
                                                             <img
@@ -181,7 +182,7 @@ export default function ProductListWithIcon({ title, color, products }) {
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                    </a>
+                                                    </NavLink>
                                                     <div
                                                         className="absolute md:hidden block group-hover:block md:group-hover:-translate-x-9 bottom-[118px] bg-blue-950/70 hover:bg-blue-950 rounded-full h-7 w-7 md:-right-6 right-2 transition duration-700 ease-in-out cursor-pointer"
                                                         onClick={() =>

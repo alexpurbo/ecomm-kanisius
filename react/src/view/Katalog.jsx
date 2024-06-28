@@ -4,6 +4,20 @@ import Breadcrumbs from "../components/Breadcrumbs";
 import axiosClient from "../axios";
 import { FormatRupiah } from "@arismun/format-rupiah";
 import PaginationLinks from "../components/PaginationLinks";
+import { useStateContext } from "../contexts/ContextProvider";
+import promo1 from "../assets/img/promo/COV-KATALOG-PAKAT-2024-K-13-213x300.png";
+import promo2 from "../assets/img/promo/COV-KATALOG_BUKU-PELAJARAN-2024-213x300.png";
+import promo3 from "../assets/img/promo/COV-PAKAT-KUMER-2024-213x300.jpeg";
+import promo4 from "../assets/img/promo/Katalog-Buku-Anak-Umum-212x300.png";
+import promo5 from "../assets/img/promo/Katalog-Buku-Filsafat-213x300.png";
+import promo6 from "../assets/img/promo/Katalog-Buku-Inisiasi-211x300.png";
+import promo7 from "../assets/img/promo/Katalog-Buku-PAKAT-216x300.png";
+import promo8 from "../assets/img/promo/Katalog-Buku-PT-212x300.png";
+import promo9 from "../assets/img/promo/Kover-KATALOG-BUKU-ANAK-REMAJA-PEMBINA-2023-213x300.png";
+import promo10 from "../assets/img/promo/Kover-KATALOG-Buku-Pendukung-Prodiakon-2023-213x300.png";
+import promo11 from "../assets/img/promo/Screenshot-2023-07-04-at-11-42-25-COVER-ISI-Katalog-Buku-Kitab-Suci-LR.pdf-213x300.png";
+import promo12 from "../assets/img/promo/Screenshot-238-210x300.png";
+import { ArrowDownTrayIcon, EyeIcon } from "@heroicons/react/24/solid";
 
 export default function Katalog() {
     const [category, setCategory] = useState([]);
@@ -11,6 +25,7 @@ export default function Katalog() {
     const [productKatalog, setProductKatalog] = useState([]);
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(false);
+    const { setUrlPathname } = useStateContext();
 
     const onPageClick = (link) => {
         getProducts(link.url);
@@ -40,6 +55,7 @@ export default function Katalog() {
     useEffect(() => {
         setCategoryData();
         getProducts();
+        setUrlPathname("/katalog");
     }, []);
 
     return (
@@ -54,96 +70,70 @@ export default function Katalog() {
                         </div>
                     </div>
                 </div>
-                <div className="mx-auto max-w-7xl mt-8 px-8 flex flex-col">
-                    <div className="w-full bg-slate-300 md:p-8 p-3">
-                        <select
-                            name="categoryName"
-                            id="categoryName"
-                            defaultValue={categoryId}
-                            onChange={(e) => setCategoryId(e.target.value)}
-                            className="w-full md:px-6 md:py-4 px-3 py-2 font-medium rounded-md border-blue-950 border-2"
-                        >
-                            {category.map((cat, index) => (
-                                <option
-                                    value={cat.katID.substring(0, 2)}
-                                    key={index}
-                                >
-                                    {cat.katNama}
-                                </option>
-                            ))}
-                        </select>
-                        {/* {categoryId} */}
+                {loading ? (
+                    <div className="mx-auto max-w-7xl mt-8 px-8">
+                        <div className="w-full bg-slate-300 rounded-lg shadow-md h-64 animate-pulse"></div>
                     </div>
-                    {loading ? (
-                        <div className="w-full mt-6 bg-white grid md:grid-cols-2 grid-cols-1 gap-4 animate-pulse">
-                            <div className="relative w-full border bg-slate-300 h-28"></div>
-                            <div className="relative w-full border bg-slate-300 h-28"></div>
-                            <div className="relative w-full border bg-slate-300 h-28"></div>
-                            <div className="relative w-full border bg-slate-300 h-28"></div>
-                        </div>
-                    ) : (
-                        <div className="w-full mt-6 bg-white grid md:grid-cols-2 grid-cols-1 gap-4">
-                            {productKatalog
-                                ? productKatalog.map((prod, index) => (
+                ) : (
+                    <div className="mx-auto max-w-7xl mt-8 px-8 flex flex-col">
+                        <div className="flex flex-wrap md:mt-28 mt-10">
+                            {category
+                                ? category.map((cat, index) => (
                                       <div
-                                          className="relative w-full border border-blue-950 shadow-md"
+                                          className="lg:w-1/2 w-full flex flex-row  md:h-36 h-20 px-2 md:mb-32 mb-16"
                                           key={index}
                                       >
-                                          <div className="px-4 md:px-2 lg:px-4 py-2 flex flex-row">
-                                              <div className="w-1/5">
-                                                  <div className="lg:h-24 lg:w-24 md:h-16 md:w-16 h-12 w-12 rounded-full bg-blue-950"></div>
-                                              </div>
-                                              <div className="relative w-4/5 h-full flex flex-col md:pl-2 pl-0 lg:pl-0">
-                                                  <p className="lg:font-medium md:font-normal lg:text-base font-extralight text-sm text-blue-950 leading-tight mb-1.5">
-                                                      {prod.ProdDesc3.length >
-                                                      55
-                                                          ? `${prod.ProdDesc3.substring(
-                                                                0,
-                                                                55
-                                                            )}...`
-                                                          : prod.ProdDesc3}
-                                                  </p>
-                                                  <p className="text-sm leading-tight text-slate-600 hidden lg:block">
-                                                      {prod.prodKet.length > 130
-                                                          ? `${prod.prodKet.substring(
-                                                                0,
-                                                                130
-                                                            )}...`
-                                                          : prod.prodKet}
-                                                  </p>
-                                              </div>
-                                          </div>
-                                          <div className="absolute right-1 bottom-0 w-3/4">
-                                              <div className="flex flex-row justify-end lg:font-medium font-light md:text-slate-500 text-slate-900 lg:text-sm text-xs">
-                                                  <p>
-                                                      {prod.nmPengarang
-                                                          ? prod.nmPengarang
-                                                                .length > 25
-                                                              ? `${prod.nmPengarang.substring(
-                                                                    0,
-                                                                    25
-                                                                )}...`
-                                                              : prod.nmPengarang
-                                                          : "-"}
-                                                  </p>
-                                                  <span> | </span>
-                                                  <FormatRupiah
-                                                      value={prod.prodPrice2}
+                                          <div className="relative w-full bg-slate-300 rounded-md group hover:shadow-md transition-all ease-in-out duration-300 flex flex-row">
+                                              <div className="absolute md:bottom-10 bottom-6 md:left-6 left-3 bg-white md:p-2 p-0.5 rounded-lg group-hover:bottom-8 md:group-hover:bottom-14 transition-all ease-in-out duration-300">
+                                                  <img
+                                                      src={
+                                                          index == 0
+                                                              ? promo1
+                                                              : index == 1
+                                                              ? promo2
+                                                              : index == 2
+                                                              ? promo3
+                                                              : index == 3
+                                                              ? promo4
+                                                              : index == 4
+                                                              ? promo5
+                                                              : index == 5
+                                                              ? promo6
+                                                              : index == 6
+                                                              ? promo7
+                                                              : promo8
+                                                      }
+                                                      alt=""
+                                                      className="md:w-[142px] md:h-[200px] w-[71px] h-[100px] rounded-md"
                                                   />
+                                              </div>
+                                              <div className="relative md:w-[182px] w-[99px]"></div>
+                                              <div className="relative pl-2 md:pt-4 pt-1 h-full">
+                                                  <h1 className="md:text-lg md:font-semibold text-sm font-medium text-blue-950">
+                                                      Katalog {cat.katNama}
+                                                  </h1>
+                                              </div>
+                                              <div className="absolute bottom-3 right-3 flex flex-row gap-2">
+                                                  <button className="px-4 hidden md:flex py-1 text-white rounded-md shadow-md bg-blue-950 hover:bg-blue-900">
+                                                      Lihat Katalog
+                                                  </button>
+                                                  <button className="px-4 hidden md:flex py-1 text-white rounded-md shadow-md bg-red-600 hover:bg-red-500">
+                                                      Download Katalog
+                                                  </button>
+                                                  <button className="md:hidden flex px-2 py-1 text-white rounded-md shadow-md bg-blue-950 hover:bg-blue-900">
+                                                      <EyeIcon className="h-3 w-3" />
+                                                  </button>
+                                                  <button className="md:hidden flex px-2 py-1 text-white rounded-md shadow-md bg-red-600 hover:bg-red-500">
+                                                      <ArrowDownTrayIcon className="h-3 w-3" />
+                                                  </button>
                                               </div>
                                           </div>
                                       </div>
                                   ))
                                 : ""}
                         </div>
-                    )}
-                    <div className="flex items-center justify-end w-full mb-4">
-                        <PaginationLinks
-                            meta={products}
-                            onPageClick={onPageClick}
-                        />
                     </div>
-                </div>
+                )}
             </PageComponent>
         </div>
     );

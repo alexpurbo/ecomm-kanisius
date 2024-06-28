@@ -7,7 +7,7 @@ import banner3 from "../assets/img/banner/Banner 3 mini.png";
 export default function PromoCards({ promos }) {
     const dataPromo = promos;
 
-    console.log(dataPromo);
+    // console.log(dataPromo);
     return (
         <div className="mx-auto max-w-7xl mt-8 px-8 flex flex-col">
             {dataPromo ? (

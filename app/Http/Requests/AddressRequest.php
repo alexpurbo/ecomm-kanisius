@@ -29,7 +29,8 @@ class AddressRequest extends FormRequest
             'city' => 'required',
             'address' => 'required',
             'handphone' => 'required',
-            'name' => 'required'
+            'name' => 'required',
+            'subdistrict' => 'required'
         ];
     }
 }

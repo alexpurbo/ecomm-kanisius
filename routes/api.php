@@ -28,6 +28,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/cartAmount', [CartController::class, 'cartAmount']);
     Route::delete('/cart/destroyAll/{id}', [CartController::class, 'destroyAll']);
     Route::apiResource('/address', CustomerAddressController::class);
+    Route::post('/getSnapToken', [CartController::class, 'getSnapToken']);
 });
 
 Route::apiResource('kel-kategori', KelKategoryController::class);
@@ -50,3 +51,5 @@ route::get('/getCategoryFirst', [PostController::class, 'getCategoryFirst']);
 route::get('/getProvinceData', [PostController::class, 'getProvinceData']);
 route::get('/getCityByProvinceId/{id}', [PostController::class, 'getCityByProvinceId']);
 route::post('/getCourierOptionByOriginAndDestination', [PostController::class, 'getCourierOptionByOriginAndDestination']);
+route::get('/getSubdistrictData/{id}', [PostController::class, 'getSubdistrictData']);
+route::get('/getProvinceDetailById/{id}', [CustomerAddressController::class, 'getProvinceDetailById']);

@@ -10,11 +10,11 @@ export default function PageComponent({ children }) {
     }, []);
     return (
         <div className="scroll-smooth">
-            <Header />
+            {/* <Header /> */}
             <Toast />
             <ProductAddToast />
             <main>{children}</main>
-            <Footer />
+            {/* <Footer /> */}
         </div>
     );
 }
