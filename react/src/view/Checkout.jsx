@@ -82,6 +82,9 @@ export default function Checkout() {
                 console.log(data);
                 // setAddressLoading(false);
                 window.snap.pay(data);
+            })
+            .catch(({ err }) => {
+                console.log(err);
             });
     };
 
